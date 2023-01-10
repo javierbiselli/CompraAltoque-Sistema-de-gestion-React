@@ -1,0 +1,63 @@
+header {
+  width: 100%;
+  background-color: rgb(58, 0, 0);
+  color: white;
+  position: fixed;
+  z-index: 100;
+}
+
+.headerUlContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  list-style: none;
+  padding: 10px;
+  height: 60px;
+}
+
+.headerUlContainer li a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.8rem;
+  border: 1px solid white;
+  padding: 8px 10px;
+  background-color: rgb(4, 105, 0);
+  border: 1px solid rgb(4, 105, 0);
+  border-radius: 10px;
+}
+
+.logOutButton {
+  color: white;
+  padding: 8px 15px;
+  border: none;
+  background-color: transparent;
+}
+
+@media only screen and (min-width: 768px) {
+  header {
+    width: 25%;
+    height: 100vh;
+    padding: 15px;
+  }
+
+  .headerUlContainer {
+    flex-direction: column;
+    padding: 0;
+  }
+
+  .headerUlContainer li {
+    margin: 15px 0;
+  }
+
+  .headerUlContainer li:last-child {
+    align-self: flex-end;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  header {
+    width: 15%;
+    height: 100vh;
+  }
+}
