@@ -68,7 +68,7 @@ export const deleteProduct = (productId) => {
   };
 };
 
-export const addProduct = (product, image, userId) => {
+export const addProduct = (product, image, userId, category) => {
   return async (dispatch) => {
     dispatch(addProductPending());
     try {
@@ -84,7 +84,7 @@ export const addProduct = (product, image, userId) => {
             price: product.price,
             image: image,
             description: product.description,
-            category: product.category,
+            category: category,
             isActive: true,
             hasDiscount: product.hasDiscount,
             discountPercentage: product.discountPercentage,
@@ -113,7 +113,7 @@ export const addProduct = (product, image, userId) => {
   };
 };
 
-export const editProduct = (product, productId) => {
+export const editProduct = (product, productId, image, category) => {
   return async (dispatch) => {
     dispatch(editProductPending());
     try {
@@ -127,9 +127,9 @@ export const editProduct = (product, productId) => {
           body: JSON.stringify({
             name: product.name,
             price: product.price,
-            image: product.image,
+            image: image,
             description: product.description,
-            category: product.category,
+            category: category,
             isActive: product.isActive,
             hasDiscount: product.hasDiscount,
             discountPercentage: product.discountPercentage,

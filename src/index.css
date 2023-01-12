@@ -18,6 +18,10 @@ code {
     monospace;
 }
 
+a {
+  text-decoration: none;
+}
+
 input[type="submit"],
 input[type="checkbox"],
 button {

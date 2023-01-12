@@ -26,12 +26,11 @@ const Home = () => {
     console.log("USEEFFECT EJECUTADO");
     dispatch(getProducts());
     getUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   const isLoading = useSelector((state) => state.products.isLoading);
   const listProducts = useSelector((state) => state.products.list);
-
-  console.log(listProducts);
 
   const [sort, setSort] = useState("");
 
@@ -146,6 +145,7 @@ const Home = () => {
   };
 
   const filterProducts = (value) => {
+    // eslint-disable-next-line array-callback-return
     const searchResult = listProducts.filter((product) => {
       if (
         product.name

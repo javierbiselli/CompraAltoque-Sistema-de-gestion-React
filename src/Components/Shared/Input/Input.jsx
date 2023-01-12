@@ -12,6 +12,8 @@ const Input = ({
   value,
   onBlur,
   onClick,
+  min,
+  max,
 }) => {
   return (
     <div className={styles.container}>
@@ -26,7 +28,10 @@ const Input = ({
         pattern={pattern}
         value={value}
         onClick={onClick}
+        min={min}
+        max={max}
       ></input>
+      {error && <p className={styles.error}>{error}</p>}
     </div>
   );
 };

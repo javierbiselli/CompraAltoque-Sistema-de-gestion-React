@@ -6,6 +6,8 @@ import { deleteProduct, editProduct } from "../../../Redux/products/thunks";
 import Input from "../Input/Input";
 import Modal from "../Modal/Modal";
 import styles from "./product.module.css";
+import { Link } from "react-router-dom";
+import noImage from "../../../Resources/Images/productoSinImagen.png";
 
 const Product = (props) => {
   const dispatch = useDispatch();
@@ -17,7 +19,6 @@ const Product = (props) => {
   const [deleteState, setDeleteState] = useState(false);
   const [deactivationState, setDeactivationState] = useState(false);
   const [discountState, setDiscountState] = useState(false);
-  const [editState, setEditState] = useState(false);
 
   const { handleSubmit, register } = useForm({
     mode: "onChange",
@@ -40,7 +41,11 @@ const Product = (props) => {
         .toISOString()
         .slice(0, 19);
 
-    if (props.discountValidDate < now(new Date()) && props.hasDiscount) {
+    if (
+      props.discountValidDate < now(new Date()) &&
+      props.hasDiscount &&
+      props.isActive
+    ) {
       const data = { hasDiscount: false, discountValidDate: null };
       console.log(`${props.name} descuento eliminado`);
       dispatch(editProduct(data, props.id)).then((response) => {
@@ -58,6 +63,7 @@ const Product = (props) => {
   useEffect(() => {
     console.log("VALIDEZ DE FECHA EJECUTADO");
     isDateValid();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const calculateDiscount = () => {
@@ -140,22 +146,6 @@ const Product = (props) => {
     }
   };
 
-  const handleProductEdit = (data) => {
-    const image = data.image;
-    try {
-      dispatch(editProduct(data, productId, image)).then((response) => {
-        if (!response.error) {
-          alert("Producto modificado correctamente");
-          setProductId(null);
-        } else {
-          alert(`${response.message}`);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleModalDiscount = () => {
     setOpenModal(true);
     setChildren(
@@ -178,6 +168,8 @@ const Product = (props) => {
             name={"discountPercentage"}
             placeholder={"Porcentage de descuento"}
             register={register}
+            min="1"
+            max="100"
           />
           <p>Valido hasta:</p>
           <Input
@@ -189,79 +181,6 @@ const Product = (props) => {
             type="submit"
             value="Continuar"
             className={styles.discountButtonModal}
-          />
-        </form>
-      </section>
-    );
-  };
-
-  const handleModalEdit = () => {
-    setOpenModal(true);
-    setChildren(
-      <section className={styles.editModalContainer}>
-        <h3>Editar producto</h3>
-        <form
-          onSubmit={handleSubmit(handleProductEdit)}
-          className={styles.editModalForm}
-        >
-          <div className={styles.editInputContainer}>
-            <label htmlFor="name">
-              Nombre: <span style={{ color: "red" }}>*</span>
-            </label>
-            <Input
-              type={"text"}
-              name={"name"}
-              placeholder={"Nombre"}
-              register={register}
-            />
-          </div>
-          <div className={styles.editInputContainer}>
-            <label htmlFor="image">Imagen:</label>
-            <Input
-              type={"text"}
-              name={"image"}
-              placeholder={"URL de imagen"}
-              register={register}
-            />
-          </div>
-          <div className={styles.editInputContainer}>
-            <label htmlFor="price">
-              Precio: <span style={{ color: "red" }}>*</span>
-            </label>
-            <Input
-              type={"number"}
-              name={"price"}
-              placeholder={"Precio"}
-              register={register}
-              pattern={"[0-9]+(\\.[0-9][0-9]?)?"}
-            />
-          </div>
-          <div className={styles.editInputContainer}>
-            <label htmlFor="category">
-              Categoria: <span style={{ color: "red" }}>*</span>
-            </label>
-            <Input
-              type={"text"}
-              name={"category"}
-              placeholder={"Categoria"}
-              register={register}
-            />
-          </div>
-          <div className={styles.editInputContainer}>
-            <label htmlFor="description">
-              Descripcion: <span style={{ color: "red" }}>*</span>
-            </label>
-            <Input
-              type={"text"}
-              name={"description"}
-              placeholder={"Descripcion"}
-              register={register}
-            />
-          </div>
-          <input
-            type="submit"
-            value="Editar"
-            className={styles.editProductButton}
           />
         </form>
       </section>
@@ -283,23 +202,19 @@ const Product = (props) => {
     setDiscountState(false);
   }
 
-  if (editState) {
-    handleModalEdit();
-    setEditState(false);
-  }
-
   const setModalContent = () => {
     setChildren(
       <section className={styles.modalProductContainer}>
-        <button
+        <Link
+          to={`/edit/${props.id}`}
           className={styles.editButtonModal}
           onClick={() => {
             setProductId(props.id);
-            setEditState(true);
+            window.sessionStorage.setItem("productData", JSON.stringify(props));
           }}
         >
           Editar producto
-        </button>
+        </Link>
         <div
           className={props.isActive === false ? styles.inactiveProduct : ""}
         ></div>
@@ -308,7 +223,15 @@ const Product = (props) => {
             className={styles.imgContainer}
             onClick={() => setOpenModal(true)}
           >
-            <img className={styles.img} src={props.image} alt={props.alt} />
+            {props.image ? (
+              <img
+                className={styles.imgModal}
+                src={props.image}
+                alt={props.alt}
+              />
+            ) : (
+              <img className={styles.noImg} src={noImage} alt={props.alt}></img>
+            )}
           </div>
           <div className={styles.productDataContainer}>
             <h3>{props.name}</h3>
@@ -321,7 +244,12 @@ const Product = (props) => {
               <>
                 <p className={styles.priceDiscount}>${props.price}</p>
                 <p>${calculateDiscount()}</p>
-                <p>descuento valido hasta: {props.discountValidDate}</p>
+                <p>
+                  descuento valido hasta:{" "}
+                  {props.discountValidDate
+                    ? props.discountValidDate
+                    : "indeterminado"}
+                </p>
               </>
             ) : (
               <p>${props.price}</p>
@@ -381,15 +309,16 @@ const Product = (props) => {
         >
           X
         </button>
-        <button
+        <Link
+          to={`/edit/${props.id}`}
           className={styles.editButton}
           onClick={() => {
             setProductId(props.id);
-            setEditState(true);
+            window.sessionStorage.setItem("productData", JSON.stringify(props));
           }}
         >
           {"\u270E"}
-        </button>
+        </Link>
         <div
           className={props.isActive === false ? styles.inactiveProduct : ""}
         ></div>
@@ -401,7 +330,11 @@ const Product = (props) => {
               setModalContent();
             }}
           >
-            <img className={styles.img} src={props.image} alt={props.alt} />
+            {props.image ? (
+              <img className={styles.img} src={props.image} alt={props.alt} />
+            ) : (
+              <img className={styles.noImg} src={noImage} alt={props.alt}></img>
+            )}
           </div>
           <div className={styles.productDataContainer}>
             <h3

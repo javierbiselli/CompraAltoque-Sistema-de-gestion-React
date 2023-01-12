@@ -8,9 +8,12 @@
 
 .errorRed {
   padding: 5px;
+  margin: 5px 0;
+  height: 35px;
   border: #ff0000 solid 2px;
   border-radius: 5px;
   box-shadow: 1px 1px 6px #00000090;
+  width: 100%;
 }
 
 .error {

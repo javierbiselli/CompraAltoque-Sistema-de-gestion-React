@@ -46,18 +46,8 @@
   font-size: 1.8rem;
 }
 
-.content a {
-  transition: 0.3s;
-  font-weight: bold;
-}
-
 .content ul {
   padding: 0;
-}
-
-.content a:hover {
-  color: rgb(175, 102, 243);
-  border-bottom: 1px solid black;
 }
 
 .closeButton {
@@ -103,14 +93,10 @@
     width: 65%;
     padding: 20px;
     max-width: 700px;
-    margin-left: 15%;
+    margin-left: 25%;
   }
   .content h2 {
     font-size: 1.4rem;
-  }
-
-  .content a {
-    font-size: 1.1rem;
   }
 
   .content {
@@ -121,5 +107,11 @@
 
   .content::-webkit-scrollbar {
     display: none;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .billboard {
+    margin-left: 15%;
   }
 }
