@@ -20,7 +20,16 @@ export const getProducts = () => {
   return async (dispatch) => {
     dispatch(getProductsPending());
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/products`);
+      const token = JSON.parse(sessionStorage.getItem('token'));
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/products`,
+        {
+          headers: {
+            "Content-type": "application/json",
+            token,
+          },
+        }
+      );
       const res = await response.json();
       dispatch(getProductsSuccess(res.data));
       return res;
