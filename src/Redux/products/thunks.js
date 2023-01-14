@@ -94,6 +94,7 @@ export const addProduct = (product, image, userId, category) => {
             promotionMessage: product.promotionMessage,
             promotionValidDate: product.promotionValidDate,
             owner: userId,
+            hasStar: false,
           }),
         }
       );
@@ -138,6 +139,7 @@ export const editProduct = (product, productId, image, category) => {
             hasPromotion: product.hasPromotion,
             promotionMessage: product.promotionMessage,
             promotionValidDate: product.promotionValidDate,
+            hasStar: product.hasStar,
           }),
         }
       );

@@ -14,6 +14,9 @@ import {
   EDIT_PRODUCT_SUCCESS,
   EDIT_PRODUCT_PENDING,
   EDIT_PRODUCT_ERROR,
+  GET_USER_PRODUCTS_SUCCESS,
+  GET_USER_PRODUCTS_PENDING,
+  GET_USER_PRODUCTS_ERROR,
 } from "./constants";
 
 export const getProductsPending = () => ({
@@ -79,4 +82,17 @@ export const editProductSuccess = (product) => ({
 
 export const editProductError = () => ({
   type: EDIT_PRODUCT_ERROR,
+});
+
+export const getUserProductsPending = () => ({
+  type: GET_USER_PRODUCTS_PENDING,
+});
+
+export const getUserProductsSuccess = (products) => ({
+  type: GET_USER_PRODUCTS_SUCCESS,
+  payload: products,
+});
+
+export const getUserProductsError = () => ({
+  type: GET_USER_PRODUCTS_ERROR,
 });

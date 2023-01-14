@@ -14,6 +14,9 @@ import {
   EDIT_PRODUCT_SUCCESS,
   EDIT_PRODUCT_PENDING,
   EDIT_PRODUCT_ERROR,
+  GET_USER_PRODUCTS_SUCCESS,
+  GET_USER_PRODUCTS_PENDING,
+  GET_USER_PRODUCTS_ERROR,
 } from "./constants";
 
 const initialState = {
@@ -114,6 +117,23 @@ export const productsReducer = (state = initialState, action) => {
         ...state,
         isLoading: false,
         error: true,
+      };
+    case GET_USER_PRODUCTS_ERROR:
+      return {
+        ...state,
+        isLoading: false,
+        error: true,
+      };
+    case GET_USER_PRODUCTS_PENDING:
+      return {
+        ...state,
+        isLoading: true,
+      };
+    case GET_USER_PRODUCTS_SUCCESS:
+      return {
+        ...state,
+        list: state.list.filter((a) => a._id === action.payload),
+        isLoading: false,
       };
 
     default: {

@@ -1,5 +1,6 @@
 .productContainer,
-.productContainerInactive {
+.productContainerInactive,
+.productContainerStar {
   position: relative;
   width: 90%;
   max-width: 500px;
@@ -9,6 +10,10 @@
   font-size: 0.8rem;
   height: 100%;
   min-height: 225px;
+}
+
+.productContainerStar {
+  border: 10px solid rgb(255, 215, 0);
 }
 
 .productInnerContainer {
@@ -100,6 +105,15 @@
   transition: 0.1s;
 }
 
+.starButton {
+  position: relative;
+  margin-bottom: 7px;
+  background-color: transparent;
+  border: none;
+  font-size: 1.3rem;
+  transition: 0.1s;
+}
+
 .editButton {
   margin-right: 33px;
   background-color: green;
@@ -109,7 +123,8 @@
 }
 
 .deleteButton:hover,
-.editButton:hover {
+.editButton:hover,
+.starButton:hover {
   scale: 1.1;
 }
 

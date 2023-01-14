@@ -4,33 +4,23 @@ import styles from "./home.module.css";
 import { getProducts } from "../../Redux/products/thunks";
 import Product from "../Shared/Product/Product";
 import { useState } from "react";
-import { getUserById } from "../../Redux/user/thunks";
 
 const Home = () => {
   const dispatch = useDispatch();
 
-  const getUser = () => {
-    const userUid = JSON.parse(window.sessionStorage.getItem("userUid"));
-    try {
-      dispatch(getUserById(userUid)).then((res) => {
-        if (!res.error) {
-          window.sessionStorage.setItem("userData", JSON.stringify(res.data));
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    console.log("USEEFFECT EJECUTADO");
+    console.log("USEEFFECT producto EJECUTADO");
     dispatch(getProducts());
-    getUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
+  const userUid = JSON.parse(window.sessionStorage.getItem("userUid"));
+
   const isLoading = useSelector((state) => state.products.isLoading);
-  const listProducts = useSelector((state) => state.products.list);
+  const oldListProducts = useSelector((state) => state.products.list);
+
+  const listProducts = oldListProducts.filter(
+    (product) => product.owner === userUid
+  );
 
   const [sort, setSort] = useState("");
 
@@ -42,6 +32,17 @@ const Home = () => {
             return -1;
           }
           if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      case "hasStar":
+        listProducts.sort((a, b) => {
+          if (a.hasStar > b.hasStar) {
+            return -1;
+          }
+          if (a.hasStar < b.hasStar) {
             return 1;
           }
           return 0;
@@ -197,7 +198,9 @@ const Home = () => {
             </div>
             <div className={styles.searchResultContainer}>
               {products.length < 1 && click ? (
-                <p>No se encontro ningun producto</p>
+                <div style={{ textAlign: "center" }}>
+                  <p>No se encontro ningun producto</p>
+                </div>
               ) : (
                 products.map((product) => (
                   <Product
@@ -216,6 +219,7 @@ const Home = () => {
                     hasPromotion={product.hasPromotion}
                     promotionMessage={product.promotionMessage}
                     promotionValidDate={product.promotionValidDate}
+                    hasStar={product.hasStar}
                   />
                 ))
               )}
@@ -236,6 +240,7 @@ const Home = () => {
                   Seleccione
                 </option>
                 <option value="name">Nombre</option>
+                <option value="hasStar">Destacados</option>
                 <option value="price">Precio mas bajo</option>
                 <option value="priceHigh">Precio mas alto</option>
                 <option value="category">Categoria</option>
@@ -246,25 +251,28 @@ const Home = () => {
               </select>
             </div>
           </div>
-          {listProducts.map((products) => (
-            <Product
-              key={products._id}
-              id={products._id}
-              name={products.name}
-              image={products.image}
-              price={products.price}
-              description={products.description}
-              category={products.category}
-              hasDiscount={products.hasDiscount}
-              discountPercentage={products.discountPercentage}
-              discountValidDate={products.discountValidDate}
-              isActive={products.isActive}
-              stock={products.stock}
-              hasPromotion={products.hasPromotion}
-              promotionMessage={products.promotionMessage}
-              promotionValidDate={products.promotionValidDate}
-            />
-          ))}
+          {listProducts.length === 0
+            ? 'No hay productos, podes agregar haciendo click en "Agregar productos"'
+            : listProducts.map((products) => (
+                <Product
+                  key={products._id}
+                  id={products._id}
+                  name={products.name}
+                  image={products.image}
+                  price={products.price}
+                  description={products.description}
+                  category={products.category}
+                  hasDiscount={products.hasDiscount}
+                  discountPercentage={products.discountPercentage}
+                  discountValidDate={products.discountValidDate}
+                  isActive={products.isActive}
+                  stock={products.stock}
+                  hasPromotion={products.hasPromotion}
+                  promotionMessage={products.promotionMessage}
+                  promotionValidDate={products.promotionValidDate}
+                  hasStar={products.hasStar}
+                />
+              ))}
         </>
       )}
     </div>

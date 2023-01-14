@@ -27,14 +27,3 @@ input[type="checkbox"],
 button {
   cursor: pointer;
 }
-
-.content {
-  position: relative;
-  top: 60px;
-}
-
-@media only screen and (min-width: 768px) {
-  .content {
-    top: 0;
-  }
-}

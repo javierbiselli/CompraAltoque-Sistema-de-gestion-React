@@ -40,7 +40,7 @@ const AddProduct = () => {
 
   const dispatch = useDispatch();
 
-  const userData = JSON.parse(window.sessionStorage.getItem("userData"));
+  const userUid = JSON.parse(window.sessionStorage.getItem("userUid"));
 
   const [image, setImage] = useState(null);
   const [url, setUrl] = useState("");
@@ -97,6 +97,20 @@ const AddProduct = () => {
     `${window.sessionStorage.getItem("userUid")}/${v4()}`
   );
 
+  // const deleteImg = () => {
+  //   const deleteRef = ref(
+  //     storage,
+  //     `${window.sessionStorage.getItem("userUid")}/$`
+  //   );
+  //   getMetadata(deleteRef)
+  //     .then((metadata) => {
+  //       console.log(metadata);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
+
   const uploadImg = () => {
     uploadBytes(storageRef, image)
       .then((snapshot) => {
@@ -122,17 +136,16 @@ const AddProduct = () => {
     const img = url;
     data.hasDiscount = clicked;
     try {
-      dispatch(addProduct(data, img, userData._id, category)).then(
-        (response) => {
-          if (!response.error) {
-            alert("Producto agregado con exito");
-            reset();
-            setCategory("");
-            setUrl("");
-            setClicked(false);
-          }
+      dispatch(addProduct(data, img, userUid, category)).then((response) => {
+        console.log(response);
+        if (!response.error) {
+          alert("Producto agregado con exito");
+          reset();
+          setCategory("");
+          setUrl("");
+          setClicked(false);
         }
-      );
+      });
     } catch (error) {
       console.log(error);
     }

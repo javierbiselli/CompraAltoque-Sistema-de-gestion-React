@@ -19,6 +19,7 @@ const Product = (props) => {
   const [deleteState, setDeleteState] = useState(false);
   const [deactivationState, setDeactivationState] = useState(false);
   const [discountState, setDiscountState] = useState(false);
+  const [starState, setStarState] = useState(false);
 
   const { handleSubmit, register } = useForm({
     mode: "onChange",
@@ -42,6 +43,7 @@ const Product = (props) => {
         .slice(0, 19);
 
     if (
+      props.discountValidDate &&
       props.discountValidDate < now(new Date()) &&
       props.hasDiscount &&
       props.isActive
@@ -187,6 +189,38 @@ const Product = (props) => {
     );
   };
 
+  const handleStar = () => {
+    const data = { hasStar: !props.hasStar };
+    if (
+      window.confirm(
+        `Estas seguro que queres ${
+          props.hasStar
+            ? "eliminar este producto de destacados?"
+            : "agregar este producto a destacados? (si lo agregas a destacados, aparecera primero en la lista de productos cuando el cliente entre en la app)"
+        }`
+      )
+    ) {
+      try {
+        dispatch(editProduct(data, productId)).then((response) => {
+          if (!response.error) {
+            alert(
+              `Producto ${
+                props.hasStar ? "eliminado de destacados" : "destacado"
+              } correctamente`
+            );
+            setProductId(null);
+          } else {
+            alert(`${response.message}`);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      setProductId(null);
+    }
+  };
+
   if (deleteState) {
     handleProductDelete();
     setDeleteState(false);
@@ -200,6 +234,11 @@ const Product = (props) => {
   if (discountState) {
     handleModalDiscount();
     setDiscountState(false);
+  }
+
+  if (starState) {
+    handleStar();
+    setStarState(false);
   }
 
   const setModalContent = () => {
@@ -299,7 +338,11 @@ const Product = (props) => {
 
   return (
     <>
-      <section className={styles.productContainer}>
+      <section
+        className={
+          props.hasStar ? styles.productContainerStar : styles.productContainer
+        }
+      >
         <button
           className={styles.deleteButton}
           onClick={() => {
@@ -319,6 +362,26 @@ const Product = (props) => {
         >
           {"\u270E"}
         </Link>
+        <button
+          className={styles.starButton}
+          onClick={() => {
+            setProductId(props.id);
+            setStarState(true);
+          }}
+        >
+          {"\u2B50"}
+        </button>
+        {props.hasStar && (
+          <span
+            style={{
+              color: "green",
+              fontWeight: "bolder",
+              fontSize: "1rem",
+            }}
+          >
+            Producto destacado
+          </span>
+        )}
         <div
           className={props.isActive === false ? styles.inactiveProduct : ""}
         ></div>

@@ -21,12 +21,12 @@ const Login = () => {
         throw user.payload;
       } else {
         const auth = getAuth();
-        alert("Te logueaste con exito");
-        navigate("/inicio");
         window.sessionStorage.setItem(
           "userUid",
           JSON.stringify(auth.currentUser.uid)
         );
+        alert("Te logueaste con exito");
+        navigate("/inicio");
         return data;
       }
     } catch (error) {
