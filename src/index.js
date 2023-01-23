@@ -9,6 +9,8 @@ import ProtectedRoutes from "./Components/Shared/ProtectedRoutes/ProtectedRoutes
 import Login from "./Components/Login/Login";
 import AddProduct from "./Components/AddProduct/AddProduct";
 import EditProduct from "./Components/EditProduct/EditProduct";
+import Contact from "./Components/Contact/Contact";
+import SendErrors from "./Components/SendErrors/SendErrors";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -19,6 +21,8 @@ root.render(
           <Route path="/inicio" element={<Home />} />
           <Route path="/agregar" element={<AddProduct />} />
           <Route path="/edit/*" element={<EditProduct />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/error-report" element={<SendErrors />} />
           <Route
             path="/*"
             element={

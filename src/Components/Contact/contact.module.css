@@ -1,0 +1,117 @@
+.contactContainer {
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+section form {
+  width: 90%;
+}
+
+section form h4 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+.textArea {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.textArea textarea {
+  height: 15vh;
+  background-color: white;
+  border-radius: 3px;
+  margin: 10px 0;
+  resize: none;
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.textArea textarea:focus {
+  outline: none;
+}
+
+.inputContainer input {
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 3px;
+  margin: 10px 0;
+  height: 30px;
+  font-size: 1rem;
+  color: black;
+  font-weight: bold;
+  padding: 5px;
+  transition: 0.3s;
+}
+
+.contactSectionScroll {
+  width: 1px;
+  position: relative;
+  top: -85px;
+}
+
+.singleInputContainer {
+  width: 99%;
+  display: flex;
+  flex-direction: column;
+}
+
+.submitButton {
+  align-self: flex-end;
+  background-color: green;
+  color: white;
+  padding: 7px 30px;
+  border: 1px solid green;
+  border-radius: 4px;
+  transition: 0.1s;
+}
+
+.submitButton:hover {
+  scale: 1.03;
+}
+
+.submitButton:focus {
+  opacity: 0.5;
+  transition: 0.5s;
+}
+
+.error {
+  font-size: 12px;
+  color: #ff0000;
+}
+
+.loadingContainer {
+  display: flex;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.loadingContainer div {
+  margin-right: 3px;
+}
+
+.inputContainer input:focus {
+  outline: none;
+  background-color: white;
+}
+
+@media only screen and (min-width: 768px) {
+  section form {
+    width: 70%;
+  }
+  .contactContainer {
+    width: 75%;
+    margin-left: 25%;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .contactContainer {
+    width: 85%;
+    margin-left: 15%;
+  }
+}

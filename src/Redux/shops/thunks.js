@@ -1,12 +1,12 @@
-import { getUserPending, getUserSuccess, getUserError } from "./actions";
+import { getShopPending, getShopSuccess, getShopError } from "./actions";
 
-export const getUserById = (userId) => {
+export const getShopById = (shopId) => {
   return async (dispatch) => {
-    dispatch(getUserPending());
+    dispatch(getShopPending());
     try {
       const token = JSON.parse(sessionStorage.getItem("token"));
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/users/uid/${userId}`,
+        `${process.env.REACT_APP_API_URL}/shops/${shopId}`,
         {
           headers: {
             "Content-type": "application/json",
@@ -15,10 +15,10 @@ export const getUserById = (userId) => {
         }
       );
       const res = await response.json();
-      dispatch(getUserSuccess(res.data));
+      dispatch(getShopSuccess(res.data));
       return res;
     } catch (error) {
-      dispatch(getUserError(error.toString()));
+      dispatch(getShopError(error.toString()));
     }
   };
 };

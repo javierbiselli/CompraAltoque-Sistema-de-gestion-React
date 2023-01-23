@@ -56,7 +56,7 @@ const Product = (props) => {
             `Se desactivo el descuento de %${props.discountPercentage} en ${props.name} porque dejo de tener validez (valido hasta ${props.discountValidDate})`
           );
         } else {
-          alert(`${response.message}`);
+          alert(`Ocurrio un error "${response.message}"`);
         }
       });
     }
@@ -86,7 +86,7 @@ const Product = (props) => {
             alert("Producto borrado correctamente");
             setProductId(null);
           } else {
-            alert(`${response.message}`);
+            alert(`Ocurrio un error "${response.message}"`);
           }
         });
       } catch (error) {
@@ -118,7 +118,7 @@ const Product = (props) => {
             );
             setProductId(null);
           } else {
-            alert(`${response.message}`);
+            alert(`Ocurrio un error "${response.message}"`);
           }
         });
       } catch (error) {
@@ -140,7 +140,7 @@ const Product = (props) => {
           );
           setProductId(null);
         } else {
-          alert(`${response.message}`);
+          alert(`Ocurrio un error "${response.message}"`);
         }
       });
     } catch (error) {
@@ -210,7 +210,7 @@ const Product = (props) => {
             );
             setProductId(null);
           } else {
-            alert(`${response.message}`);
+            alert(`Ocurrio un error "${response.message}"`);
           }
         });
       } catch (error) {

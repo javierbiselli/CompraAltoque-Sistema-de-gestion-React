@@ -26,11 +26,27 @@ header {
   border-radius: 10px;
 }
 
+.headerUlContainer li {
+  transition: 0.1s;
+}
+
+.headerUlContainer li:hover {
+  scale: 1.03;
+}
+
 .logOutButton {
   color: white;
   padding: 8px 15px;
   border: none;
-  background-color: transparent;
+  background-color: rgb(155, 0, 0);
+  border: 3px solid rgb(155, 0, 0);
+  border-radius: 15px;
+  transition: 0.1s;
+  align-self: flex-end;
+}
+
+.logOutButton:hover {
+  scale: 1.03;
 }
 
 ul {
@@ -41,11 +57,18 @@ ul {
   display: none;
 }
 
+.contact {
+  display: none;
+}
+
 @media only screen and (min-width: 768px) {
   header {
     width: 25%;
     height: 100vh;
     padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
 
   .headerUlContainer {
@@ -57,12 +80,25 @@ ul {
     margin: 15px 0;
   }
 
-  .headerUlContainer li:last-child {
-    align-self: flex-end;
-  }
-
   .userDataContainer {
     display: block;
+  }
+
+  .userDataContainer p,
+  .userDataContainer li {
+    margin: 5px 0;
+    font-size: 0.9rem;
+  }
+
+  .contact {
+    display: inline;
+    color: white;
+    border-bottom: 1px solid white;
+    text-align: center;
+  }
+
+  .contact:hover {
+    color: aqua;
   }
 }
 

@@ -4,6 +4,7 @@ import { login } from "../../Redux/auth/thunks";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAuth } from "firebase/auth";
+import { getUserById } from "../../Redux/user/thunks";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -25,8 +26,15 @@ const Login = () => {
           "userUid",
           JSON.stringify(auth.currentUser.uid)
         );
-        alert("Te logueaste con exito");
-        navigate("/inicio");
+        dispatch(getUserById(auth.currentUser.uid)).then((res) => {
+          if (!res.error) {
+            window.sessionStorage.setItem("userData", JSON.stringify(res.data));
+            alert("Te logueaste con exito");
+            navigate("/inicio");
+          } else {
+            alert("Ocurrio un error");
+          }
+        });
         return data;
       }
     } catch (error) {

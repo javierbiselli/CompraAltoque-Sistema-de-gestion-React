@@ -20,7 +20,7 @@ export const getProducts = () => {
   return async (dispatch) => {
     dispatch(getProductsPending());
     try {
-      const token = JSON.parse(sessionStorage.getItem('token'));
+      const token = JSON.parse(sessionStorage.getItem("token"));
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/products`,
         {
@@ -43,8 +43,15 @@ export const getProductById = (productId) => {
   return async (dispatch) => {
     dispatch(getProductPending());
     try {
+      const token = JSON.parse(sessionStorage.getItem("token"));
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/products/${productId}`
+        `${process.env.REACT_APP_API_URL}/products/${productId}`,
+        {
+          headers: {
+            "Content-type": "application/json",
+            token,
+          },
+        }
       );
       const res = await response.json();
       dispatch(getProductSuccess(res.data));
@@ -59,10 +66,15 @@ export const deleteProduct = (productId) => {
   return async (dispatch) => {
     dispatch(deleteProductPending());
     try {
+      const token = JSON.parse(sessionStorage.getItem("token"));
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/products/${productId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-type": "application/json",
+            token,
+          },
         }
       );
       const res = await response.json();
@@ -77,16 +89,18 @@ export const deleteProduct = (productId) => {
   };
 };
 
-export const addProduct = (product, image, userId, category) => {
+export const addProduct = (product, image, shopId, category) => {
   return async (dispatch) => {
     dispatch(addProductPending());
     try {
+      const token = JSON.parse(sessionStorage.getItem("token"));
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/products`,
         {
           method: "POST",
           headers: {
             "Content-type": "application/json",
+            token,
           },
           body: JSON.stringify({
             name: product.name,
@@ -102,7 +116,7 @@ export const addProduct = (product, image, userId, category) => {
             hasPromotion: product.hasPromotion,
             promotionMessage: product.promotionMessage,
             promotionValidDate: product.promotionValidDate,
-            owner: userId,
+            shopId: shopId,
             hasStar: false,
           }),
         }
@@ -127,12 +141,14 @@ export const editProduct = (product, productId, image, category) => {
   return async (dispatch) => {
     dispatch(editProductPending());
     try {
+      const token = JSON.parse(sessionStorage.getItem("token"));
       const response = await fetch(
         `${process.env.REACT_APP_API_URL}/products/${productId}`,
         {
           method: "PUT",
           headers: {
             "Content-type": "application/json",
+            token,
           },
           body: JSON.stringify({
             name: product.name,

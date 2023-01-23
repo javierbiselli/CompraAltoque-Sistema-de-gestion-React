@@ -1,0 +1,3 @@
+export const GET_SHOP_SUCCESS = "GET_SHOP_SUCCESS";
+export const GET_SHOP_PENDING = "GET_SHOP_PENDING";
+export const GET_SHOP_ERROR = "GET_SHOP_ERROR";

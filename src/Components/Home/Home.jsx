@@ -4,22 +4,36 @@ import styles from "./home.module.css";
 import { getProducts } from "../../Redux/products/thunks";
 import Product from "../Shared/Product/Product";
 import { useState } from "react";
+import { tokenListener } from "../../firebase";
+import { getAuth } from "../../Redux/auth/thunks";
 
 const Home = () => {
   const dispatch = useDispatch();
+
+  const token = useSelector((store) => store.auth.authenticated?.token);
+
+  useEffect(() => {
+    tokenListener();
+    console.log("token");
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getAuth(token));
+    }
+  }, [token]);
 
   useEffect(() => {
     console.log("USEEFFECT producto EJECUTADO");
     dispatch(getProducts());
   }, [dispatch]);
 
-  const userUid = JSON.parse(window.sessionStorage.getItem("userUid"));
-
+  const userData = JSON.parse(window.sessionStorage.getItem("userData"));
   const isLoading = useSelector((state) => state.products.isLoading);
   const oldListProducts = useSelector((state) => state.products.list);
 
   const listProducts = oldListProducts.filter(
-    (product) => product.owner === userUid
+    (product) => product.shopId === userData.shopId
   );
 
   const [sort, setSort] = useState("");

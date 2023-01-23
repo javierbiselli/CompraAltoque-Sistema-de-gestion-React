@@ -41,6 +41,7 @@ const AddProduct = () => {
   const dispatch = useDispatch();
 
   const userUid = JSON.parse(window.sessionStorage.getItem("userUid"));
+  const userData = JSON.parse(window.sessionStorage.getItem("userData"));
 
   const [image, setImage] = useState(null);
   const [url, setUrl] = useState("");
@@ -136,16 +137,19 @@ const AddProduct = () => {
     const img = url;
     data.hasDiscount = clicked;
     try {
-      dispatch(addProduct(data, img, userUid, category)).then((response) => {
-        console.log(response);
-        if (!response.error) {
-          alert("Producto agregado con exito");
-          reset();
-          setCategory("");
-          setUrl("");
-          setClicked(false);
+      dispatch(addProduct(data, img, userData.shopId, category)).then(
+        (response) => {
+          if (!response.error) {
+            alert("Producto agregado con exito");
+            reset();
+            setCategory("");
+            setUrl("");
+            setClicked(false);
+          } else {
+            alert(`Ocurrio un error "${response.message}"`);
+          }
         }
-      });
+      );
     } catch (error) {
       console.log(error);
     }
