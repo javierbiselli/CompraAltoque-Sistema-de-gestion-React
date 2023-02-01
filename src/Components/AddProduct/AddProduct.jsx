@@ -87,7 +87,7 @@ const AddProduct = () => {
           "any.required": "Este campo es obligatorio",
           "number.base": "Escribi un numero entre el 0 y 100",
         })
-      : "",
+      : Joi.allow(),
     discountValidDate: Joi.allow(),
   });
 
@@ -164,10 +164,6 @@ const AddProduct = () => {
     setPrice(null);
     setDiscount(null);
   };
-
-  console.log(discount);
-
-  console.log(clicked);
 
   return (
     <div className={styles.addProductContainer}>
