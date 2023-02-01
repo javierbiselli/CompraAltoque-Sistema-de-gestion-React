@@ -8,6 +8,7 @@ import Modal from "../Modal/Modal";
 import styles from "./product.module.css";
 import { Link } from "react-router-dom";
 import noImage from "../../../Resources/Images/productoSinImagen.png";
+import { MdEdit, MdDelete } from "react-icons/md";
 
 const Product = (props) => {
   const dispatch = useDispatch();
@@ -343,45 +344,61 @@ const Product = (props) => {
           props.hasStar ? styles.productContainerStar : styles.productContainer
         }
       >
-        <button
-          className={styles.deleteButton}
-          onClick={() => {
-            setProductId(props.id);
-            setDeleteState(true);
-          }}
-        >
-          X
-        </button>
-        <Link
-          to={`/edit/${props.id}`}
-          className={styles.editButton}
-          onClick={() => {
-            setProductId(props.id);
-            window.sessionStorage.setItem("productData", JSON.stringify(props));
-          }}
-        >
-          {"\u270E"}
-        </Link>
-        <button
-          className={styles.starButton}
-          onClick={() => {
-            setProductId(props.id);
-            setStarState(true);
-          }}
-        >
-          {"\u2B50"}
-        </button>
-        {props.hasStar && (
-          <span
-            style={{
-              color: "green",
-              fontWeight: "bolder",
-              fontSize: "1rem",
-            }}
-          >
-            Producto destacado
-          </span>
-        )}
+        <div className={styles.productContainerHeader}>
+          <div className={styles.starContainer}>
+            <button
+              className={styles.starButton}
+              onClick={() => {
+                setProductId(props.id);
+                setStarState(true);
+              }}
+            >
+              {"\u2B50"}
+            </button>
+            {props.hasStar && props.isActive && (
+              <span
+                style={{
+                  color: "green",
+                  fontWeight: "bolder",
+                  fontSize: "1rem",
+                }}
+              >
+                Producto destacado
+              </span>
+            )}
+            {!props.isActive && (
+              <p
+                style={{ color: "#444", fontStyle: "italic", fontSize: "1rem" }}
+              >
+                Producto inactivo
+              </p>
+            )}
+          </div>
+          <div className={styles.actionsContainer}>
+            <Link
+              to={`/edit/${props.id}`}
+              className={styles.editButton}
+              onClick={() => {
+                setProductId(props.id);
+                window.sessionStorage.setItem(
+                  "productData",
+                  JSON.stringify(props)
+                );
+              }}
+            >
+              <MdEdit />
+            </Link>
+            <button
+              className={styles.deleteButton}
+              onClick={() => {
+                setProductId(props.id);
+                setDeleteState(true);
+              }}
+            >
+              <MdDelete />
+            </button>
+          </div>
+        </div>
         <div
           className={props.isActive === false ? styles.inactiveProduct : ""}
         ></div>
@@ -416,36 +433,35 @@ const Product = (props) => {
             >
               {props.hasDiscount ? (
                 <>
-                  <p className={styles.priceDiscount}>${props.price}</p>
                   <p>${calculateDiscount()}</p>
+                  <p className={styles.priceDiscount}>${props.price}</p>
                 </>
               ) : (
                 <p>${props.price}</p>
               )}
             </h4>
-            <button
-              className={styles.discountButton}
-              onClick={() => {
-                setProductId(props.id);
-                setDiscountState(true);
-              }}
-            >
-              {props.hasDiscount ? "Modificar descuento" : "Agregar descuento"}
-            </button>
-            <button
-              className={styles.deactivateButton}
-              onClick={() => {
-                setProductId(props.id);
-                setDeactivationState(true);
-              }}
-            >
-              {props.isActive ? "Desactivar producto" : "Activar Producto"}
-            </button>
-            {!props.isActive && (
-              <p style={{ color: "red", marginTop: "7px" }}>
-                Producto inactivo
-              </p>
-            )}
+            <div className={styles.productButtonContainer}>
+              <button
+                className={styles.discountButton}
+                onClick={() => {
+                  setProductId(props.id);
+                  setDiscountState(true);
+                }}
+              >
+                {props.hasDiscount
+                  ? "Modificar descuento"
+                  : "Agregar descuento"}
+              </button>
+              <button
+                className={styles.deactivateButton}
+                onClick={() => {
+                  setProductId(props.id);
+                  setDeactivationState(true);
+                }}
+              >
+                {props.isActive ? "Desactivar producto" : "Activar Producto"}
+              </button>
+            </div>
           </div>
         </div>
       </section>
