@@ -29,8 +29,8 @@ const Contact = () => {
   });
 
   const sendEmail = async (data) => {
+    setIsLoading(true);
     data.email = userEmail;
-    console.log(data);
     emailjs
       .send("service_g2le82c", "template_ygrdrbb", data, "V61t4y1LnMzqdr-T4")
       .then((res) => {
@@ -61,20 +61,44 @@ const Contact = () => {
         <div className={styles.textArea}>
           <label htmlFor="message">Mensaje</label>
           <textarea name="message" {...register("message")}></textarea>
-          <p>
-            inclui los datos originales y como los queres cambiar, por ejemplo:
-            <div>
-              datos originales: horarios: de lunes a viernes de 9 a 17 horas;
-              informacion extra: envios a toda la ciudad
-            </div>
-            datos nuevos: horarios: de lunes a sabados de 9 a 15, informacion
-            extra: ninguna
-          </p>
+          <div className={styles.loadingContainer}>
+            <Loader show={isLoading} />
+            <input
+              type="submit"
+              value="Enviar"
+              className={styles.submitButton}
+            />
+          </div>
+          <div>
+            <p>
+              Si te contactás por algún error o problema con el sistema de
+              gestión:
+            </p>
+            <p>
+              Contanos cuál fue el incoveniente, y si hay algún mensaje de
+              error, incluilo; te responderemos en la brevedad. Tené en cuenta
+              que este sistema está en desarrollo y pueden haber errores o
+              problemas que se corrigen a medida que los vamos encontrando
+            </p>
+            <p>Si te contactás para cambiar los datos de tu negocio:</p>
+            <p>
+              Incluí los datos originales y como los queres cambiar, por
+              ejemplo:
+            </p>
+            <p>datos originales:</p>
+            <p>
+              horarios: de lunes a viernes de 9 a 17 horas; información extra:
+              envíos a toda la ciudad
+            </p>
+            <p>datos nuevos:</p>
+            <p>
+              horarios: de lunes a sábados de 9 a 15, información extra: ninguna
+            </p>
+            <p>
+              Los cambios pueden tardar en reflejarse hasta 48 horas hábiles
+            </p>
+          </div>
           <div className={styles.error}>{errors.message?.message}</div>
-        </div>
-        <div className={styles.loadingContainer}>
-          <Loader show={isLoading} />
-          <input type="submit" value="Enviar" className={styles.submitButton} />
         </div>
       </form>
       <Modal
@@ -82,8 +106,7 @@ const Contact = () => {
         handleClose={() => setShowModal(false)}
         closeButton="OK"
       >
-        Mensaje enviado. Se realizaran los cambios solicitados dentro de 48
-        horas habiles
+        Mensaje enviado
       </Modal>
     </section>
   );

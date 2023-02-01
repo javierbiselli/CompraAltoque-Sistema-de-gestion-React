@@ -66,6 +66,10 @@ ul {
   display: none;
 }
 
+.system {
+  display: none;
+}
+
 @media only screen and (min-width: 768px) {
   header {
     width: 25%;
@@ -126,6 +130,14 @@ ul {
 
   .logOutButton {
     align-self: flex-end;
+  }
+
+  .system {
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    letter-spacing: 3px;
   }
 }
 

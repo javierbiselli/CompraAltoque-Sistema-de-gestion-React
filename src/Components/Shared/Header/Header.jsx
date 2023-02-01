@@ -44,7 +44,10 @@ const Header = () => {
 
   return (
     <header>
-      <img src={logo} alt="logo" />
+      <div>
+        <img src={logo} alt="logo" />
+        <p className={styles.system}>SISTEMA DE GESTION</p>
+      </div>
       <ul className={styles.headerUlContainer}>
         <li>
           <Link to="/agregar">Agregar productos</Link>

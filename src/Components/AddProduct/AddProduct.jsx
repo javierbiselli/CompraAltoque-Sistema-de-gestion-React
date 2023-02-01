@@ -85,8 +85,9 @@ const AddProduct = () => {
           "number.min": "Entre 0 y 100",
           "number.max": "Entre 0 y 100",
           "any.required": "Este campo es obligatorio",
+          "number.base": "Escribi un numero entre el 0 y 100",
         })
-      : Joi.number(),
+      : "",
     discountValidDate: Joi.allow(),
   });
 
@@ -266,7 +267,6 @@ const AddProduct = () => {
               register={register}
               onClick={(e) => {
                 setClicked(!clicked);
-                discount && setDiscount(0);
               }}
             />
           </div>
@@ -277,8 +277,7 @@ const AddProduct = () => {
               placeholder={"De cuanto es el descuento?"}
               register={register}
               disabled={!clicked ? true : false}
-              error={errors.discountPercentage?.message}
-              value={!clicked ? 0 : undefined}
+              error={clicked && errors.discountPercentage?.message}
               {...register("discountPercentage", {
                 onChange: (e) => {
                   setDiscount(e.target.value);

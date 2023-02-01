@@ -1,3 +1,19 @@
 .sendErrorContainer {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding: 15px 10px;
+}
+
+@media only screen and (min-width: 768px) {
+  .sendErrorContainer {
+    width: 75%;
+    margin-left: 25%;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .sendErrorContainer {
+    width: 85%;
+    margin-left: 15%;
+  }
 }
