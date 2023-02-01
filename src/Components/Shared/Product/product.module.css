@@ -104,7 +104,6 @@
 }
 
 .productDataContainer h4 {
-  height: 60px;
   padding: 2px 0;
   font-size: 1.5rem;
   font-weight: 900;
@@ -196,7 +195,8 @@
 .discountButton:hover,
 .discountButtonModal:hover,
 .deleteModalButton:hover,
-.editButtonModal:hover {
+.editButtonModal:hover,
+.starButton:hover {
   scale: 1.03;
 }
 
