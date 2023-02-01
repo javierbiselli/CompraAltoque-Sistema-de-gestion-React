@@ -1,6 +1,7 @@
 .content {
   position: relative;
   top: 60px;
+  min-height: 100vh;
 }
 
 @media only screen and (min-width: 768px) {
