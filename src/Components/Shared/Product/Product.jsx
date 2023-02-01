@@ -170,7 +170,7 @@ const Product = (props) => {
             name={"discountPercentage"}
             placeholder={"Porcentage de descuento"}
             register={register}
-            min="1"
+            min="0"
             max="100"
           />
           <p>Valido hasta:</p>

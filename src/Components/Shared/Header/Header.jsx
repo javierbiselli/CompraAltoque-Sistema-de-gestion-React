@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getUserById } from "../../../Redux/user/thunks";
 import { useEffect } from "react";
 import { getShopById } from "../../../Redux/shops/thunks";
+import logo from "./logoBlanco.png";
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const Header = () => {
 
   return (
     <header>
+      <img src={logo} alt="logo" />
       <ul className={styles.headerUlContainer}>
         <li>
           <Link to="/agregar">Agregar productos</Link>

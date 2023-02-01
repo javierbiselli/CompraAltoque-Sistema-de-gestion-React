@@ -50,6 +50,13 @@ const AddProduct = () => {
 
   const [category, setCategory] = useState("");
 
+  const [price, setPrice] = useState(0);
+  const [discount, setDiscount] = useState(0);
+
+  const calculateDiscount = () => {
+    return Math.round(price - (discount / 100) * price);
+  };
+
   const productSchema = Joi.object({
     name: Joi.string().required().min(10).max(30).messages({
       "string.min": "El nombre del producto debe tener al menos 10 caracteres",
@@ -73,13 +80,13 @@ const AddProduct = () => {
       "string.empty": "Este campo es obligatorio",
     }),
     hasDiscount: Joi.boolean(),
-    discountPercentage:
-      clicked &&
-      Joi.number().required().min(1).max(100).messages({
-        "number.min": "Entre 1 y 100",
-        "number.max": "Entre 1 y 100",
-        "any.required": "Este campo es obligatorio",
-      }),
+    discountPercentage: clicked
+      ? Joi.number().required().min(0).max(100).messages({
+          "number.min": "Entre 0 y 100",
+          "number.max": "Entre 0 y 100",
+          "any.required": "Este campo es obligatorio",
+        })
+      : Joi.number(),
     discountValidDate: Joi.allow(),
   });
 
@@ -153,7 +160,13 @@ const AddProduct = () => {
     } catch (error) {
       console.log(error);
     }
+    setPrice(null);
+    setDiscount(null);
   };
+
+  console.log(discount);
+
+  console.log(clicked);
 
   return (
     <div className={styles.addProductContainer}>
@@ -205,6 +218,11 @@ const AddProduct = () => {
           placeholder={"Precio"}
           register={register}
           error={errors.price?.message}
+          {...register("price", {
+            onChange: (e) => {
+              setPrice(e.target.value);
+            },
+          })}
         />
         <p>Categoria:</p>
         <select
@@ -246,7 +264,10 @@ const AddProduct = () => {
               type={"checkbox"}
               name={"hasDiscount"}
               register={register}
-              onClick={(e) => setClicked(e.target.checked)}
+              onClick={(e) => {
+                setClicked(!clicked);
+                discount && setDiscount(0);
+              }}
             />
           </div>
           <div className={clicked ? styles.discountTrue : styles.discountFalse}>
@@ -257,7 +278,18 @@ const AddProduct = () => {
               register={register}
               disabled={!clicked ? true : false}
               error={errors.discountPercentage?.message}
+              value={!clicked ? 0 : undefined}
+              {...register("discountPercentage", {
+                onChange: (e) => {
+                  setDiscount(e.target.value);
+                },
+              })}
             />
+            <p style={{ marginTop: 5, marginBottom: 20, fontWeight: "bold" }}>
+              {clicked &&
+                `Precio con descuento del ${discount}%: $` +
+                  calculateDiscount()}
+            </p>
             <p>Hasta cuando es valido el descuento?</p>
             <Input
               type={"datetime-local"}
