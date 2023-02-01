@@ -1,11 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "./home.module.css";
-import { getProducts } from "../../Redux/products/thunks";
-import Product from "../Shared/Product/Product";
-import { useState } from "react";
 import { tokenListener } from "../../firebase";
 import { getAuth } from "../../Redux/auth/thunks";
+import { getProducts } from "../../Redux/products/thunks";
+import Product from "../Shared/Product/Product";
+import styles from "./home.module.css";
 
 const Home = () => {
   const dispatch = useDispatch();
