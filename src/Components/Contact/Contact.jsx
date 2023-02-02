@@ -46,7 +46,6 @@ const Contact = () => {
 
   return (
     <section className={styles.contactContainer} id="Contact">
-      <div id="ContactSection" className={styles.contactSectionScroll}></div>
       <form onSubmit={handleSubmit(sendEmail)}>
         <h4>Contacto</h4>
         <label htmlFor="email">Email</label>

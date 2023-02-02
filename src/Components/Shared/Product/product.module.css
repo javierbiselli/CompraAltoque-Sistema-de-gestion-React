@@ -115,7 +115,7 @@
   font-size: 1rem;
   font-weight: lighter;
   color: gray;
-  opacity: .75;
+  opacity: 0.75;
 }
 
 .deleteButton,
@@ -148,7 +148,8 @@
   color: red;
 }
 
-.editButton:hover,.deleteButton:hover {
+.editButton:hover,
+.deleteButton:hover {
   background-color: #0001;
 }
 
@@ -206,7 +207,7 @@
 .deleteModalButton:active,
 .editButtonModal:active {
   border: 1px solid transparent;
-  transform: scale(.97);
+  transform: scale(0.97);
 }
 
 .modalProductContainer {
@@ -278,6 +279,6 @@
     box-shadow: 0 0 4px 2px rgba(255, 215, 0, 0.6);
   }
   100% {
-    box-shadow: 0 0 4px 2px  rgba(255, 215, 0, 1);
+    box-shadow: 0 0 4px 2px rgba(255, 215, 0, 1);
   }
 }
