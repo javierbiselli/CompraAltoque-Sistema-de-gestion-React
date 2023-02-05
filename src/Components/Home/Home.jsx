@@ -33,7 +33,7 @@ const Home = () => {
   const oldListProducts = useSelector((state) => state.products.list);
 
   const listProducts = oldListProducts.filter(
-    (product) => product.shopId === userData.shopId
+    (product) => product.shopId._id === userData.shopId
   );
 
   const [sort, setSort] = useState("");
