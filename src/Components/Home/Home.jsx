@@ -186,7 +186,7 @@ const Home = () => {
   };
 
   const filterProducts = (values) => {
-    const searchWords = values.split(" ");
+    const searchWords = values.toLowerCase().split(" ");
     const searchResult = listProducts.filter((product) => {
       let match = 0;
       searchWords.forEach((word) => {
