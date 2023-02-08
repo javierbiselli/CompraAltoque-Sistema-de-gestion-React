@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable array-callback-return */
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./home.module.css";
@@ -35,6 +37,12 @@ const Home = () => {
   const listProducts = oldListProducts.filter(
     (product) => product.shopId._id === userData.shopId
   );
+
+  const calculateDiscount = (discountPercentage, originalPrice) => {
+    const discount = discountPercentage;
+    const price = originalPrice;
+    return Math.round(price - (discount / 100) * price);
+  };
 
   const [sort, setSort] = useState("");
 
@@ -97,24 +105,42 @@ const Home = () => {
         break;
       case "price":
         listProducts.sort((a, b) => {
-          if (a.price < b.price) {
+          const priceAWithDiscount = calculateDiscount(
+            a.hasDiscount ? a.discountPercentage : 0,
+            a.price
+          );
+
+          const priceBWithDiscount = calculateDiscount(
+            b.discountPercentage ? b.discountPercentage : 0,
+            b.price
+          );
+
+          if (priceAWithDiscount < priceBWithDiscount) {
             return -1;
           }
-          if (a.price > b.price) {
+          if (priceAWithDiscount > priceBWithDiscount) {
             return 1;
           }
-          return 0;
         });
         break;
       case "priceHigh":
         listProducts.sort((a, b) => {
-          if (a.price > b.price) {
+          const priceAWithDiscount = calculateDiscount(
+            a.hasDiscount ? a.discountPercentage : 0,
+            a.price
+          );
+
+          const priceBWithDiscount = calculateDiscount(
+            b.discountPercentage ? b.discountPercentage : 0,
+            b.price
+          );
+
+          if (priceAWithDiscount > priceBWithDiscount) {
             return -1;
           }
-          if (a.price < b.price) {
+          if (priceAWithDiscount < priceBWithDiscount) {
             return 1;
           }
-          return 0;
         });
         break;
       case "hasNotDiscount":
@@ -159,23 +185,19 @@ const Home = () => {
     }
   };
 
-  const filterProducts = (value) => {
-    // eslint-disable-next-line array-callback-return
+  const filterProducts = (values) => {
+    const searchWords = values.split(" ");
     const searchResult = listProducts.filter((product) => {
-      if (
-        product.name
-          .toString()
-          .toLowerCase()
-          .includes(value.toString().toLowerCase()) ||
-        product.description
-          .toString()
-          .toLowerCase()
-          .includes(value.toString().toLowerCase()) ||
-        product.category
-          .toString()
-          .toLowerCase()
-          .includes(value.toString().toLowerCase())
-      ) {
+      let match = 0;
+      searchWords.forEach((word) => {
+        if (
+          product.keywords.join(" ").match(word) &&
+          product.isActive === true
+        ) {
+          match += 1;
+        }
+      });
+      if (match === searchWords.length) {
         return product;
       }
     });
@@ -194,6 +216,11 @@ const Home = () => {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    filterProducts(search);
+                  }
+                }}
                 placeholder="Buscar producto"
               />
               <button onClick={handleSearchBar} className={styles.searchButton}>

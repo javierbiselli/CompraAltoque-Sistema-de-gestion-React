@@ -40,7 +40,6 @@ const AddProduct = () => {
 
   const dispatch = useDispatch();
 
-  const userUid = JSON.parse(window.sessionStorage.getItem("userUid"));
   const userData = JSON.parse(window.sessionStorage.getItem("userData"));
 
   const [image, setImage] = useState(null);
@@ -58,9 +57,9 @@ const AddProduct = () => {
   };
 
   const productSchema = Joi.object({
-    name: Joi.string().required().min(10).max(30).messages({
+    name: Joi.string().required().min(10).max(50).messages({
       "string.min": "El nombre del producto debe tener al menos 10 caracteres",
-      "string.max": "El nombre del producto no debe tener mas de 30 caracteres",
+      "string.max": "El nombre del producto no debe tener mas de 50 caracteres",
       "string.empty": "Este campo es obligatorio",
     }),
     image: Joi.string().min(0),
@@ -141,12 +140,40 @@ const AddProduct = () => {
     setImage(null);
   }
 
+  const extractKeywords = (product) => {
+    const { name, description } = product;
+    const categoryWord = category;
+    const keywords = [];
+
+    // extraer palabras de nombre, descripción y categoría
+    const words = [
+      ...name.split(" "),
+      ...description.split(" "),
+      ...categoryWord.split(" "),
+    ];
+
+    console.log(words);
+
+    // filtrar palabras con longitud menor a 1
+    words.forEach((word) => {
+      if (word.length >= 1) {
+        keywords.push(word.toLowerCase());
+      }
+    });
+
+    return keywords;
+  };
+
   const handleProductAdd = (data) => {
+    console.log(data);
     const img = url;
     data.hasDiscount = clicked;
+    const keywords = extractKeywords(data);
+    data.keywords = keywords;
     try {
       dispatch(addProduct(data, img, userData.shopId, category)).then(
         (response) => {
+          console.log(response);
           if (!response.error) {
             alert("Producto agregado con exito");
             reset();
@@ -254,6 +281,21 @@ const AddProduct = () => {
           register={register}
           error={errors.description?.message}
         />
+        <p
+          style={{
+            fontSize: "1rem",
+            textAlign: "center",
+            borderWidth: "3px",
+            borderColor: "darkgrey",
+            borderStyle: "solid",
+            padding: "20px",
+          }}
+        >
+          Para que tu producto aparezca en mas busquedas, siempre es
+          recomendable que agregues detalles en la descripcion, como por
+          ejemplo: el tamano del producto, el sabor, la marca, caracteristicas
+          especiales, etc
+        </p>
         <div className={styles.discountContainer}>
           <div className={styles.hasDiscountContainer}>
             <p>Tiene descuento:</p>

@@ -118,6 +118,7 @@ export const addProduct = (product, image, shopId, category) => {
             promotionValidDate: product.promotionValidDate,
             shopId: shopId,
             hasStar: false,
+            keywords: product.keywords,
           }),
         }
       );
@@ -165,6 +166,7 @@ export const editProduct = (product, productId, image, category) => {
             promotionMessage: product.promotionMessage,
             promotionValidDate: product.promotionValidDate,
             hasStar: product.hasStar,
+            keywords: product.keywords,
           }),
         }
       );

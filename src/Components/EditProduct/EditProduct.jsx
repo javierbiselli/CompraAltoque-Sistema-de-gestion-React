@@ -80,9 +80,9 @@ const EditProduct = () => {
   }
 
   const productSchema = Joi.object({
-    name: Joi.string().required().min(10).max(30).messages({
+    name: Joi.string().required().min(10).max(50).messages({
       "string.min": "El nombre del producto debe tener al menos 10 caracteres",
-      "string.max": "El nombre del producto no debe tener mas de 30 caracteres",
+      "string.max": "El nombre del producto no debe tener mas de 50 caracteres",
       "string.empty": "Este campo es obligatorio",
     }),
     image: Joi.string().min(0),
@@ -123,7 +123,33 @@ const EditProduct = () => {
     },
   });
 
+  const extractKeywords = (product) => {
+    const { name, description } = product;
+    const categoryWord = category;
+    const keywords = [];
+
+    // extraer palabras de nombre, descripción y categoría
+    const words = [
+      ...name.split(" "),
+      ...description.split(" "),
+      ...categoryWord.split(" "),
+    ];
+
+    console.log(words);
+
+    // filtrar palabras con longitud menor a 1
+    words.forEach((word) => {
+      if (word.length >= 1) {
+        keywords.push(word.toLowerCase());
+      }
+    });
+
+    return keywords;
+  };
+
   const handleProductEdit = (data) => {
+    const keywords = extractKeywords(data);
+    data.keywords = keywords;
     const img = url;
     try {
       dispatch(editProduct(data, productData.id, img, category)).then(
