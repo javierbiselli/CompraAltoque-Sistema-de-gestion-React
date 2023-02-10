@@ -1,8 +1,8 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
-import store from "../Redux/store";
-import { setAuthentication } from "../Redux/auth/actions";
 import { getStorage } from "firebase/storage";
+import { refreshToken } from "../Redux/auth/actions";
+import store from "../Redux/store";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -24,7 +24,8 @@ export const tokenListener = () => {
       const {
         claims: { role },
       } = await user.getIdTokenResult();
-      store.dispatch(setAuthentication({ token, role }));
+      sessionStorage.setItem("token", JSON.stringify(token));
+      store.dispatch(refreshToken({ token, role }));
     }
   });
 };

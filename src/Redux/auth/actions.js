@@ -6,7 +6,8 @@ import {
   SET_AUTHENTICATION,
   GET_AUTH_PENDING,
   GET_AUTH_SUCCESS,
-  IS_LOGGED
+  IS_LOGGED,
+  REFRESH_TOKEN
 } from './constants';
 
 export const loginPending = () => {
@@ -68,3 +69,10 @@ export const IsLogged = (logged) => {
     payload: logged
   };
 };
+
+export const refreshToken = (authData) => {
+  return {
+    type: REFRESH_TOKEN,
+    payload: authData
+  }
+}
