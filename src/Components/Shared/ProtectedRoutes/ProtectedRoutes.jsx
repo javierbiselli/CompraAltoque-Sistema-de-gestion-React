@@ -1,9 +1,15 @@
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
+import { tokenListener } from "../../../firebase";
 import Header from "../Header/Header";
 import styles from "./protectedRoutes.module.css";
 
 const ProtectedRoutes = () => {
   const user = window.sessionStorage.getItem("userUid");
+
+  useEffect(() => {
+    tokenListener();
+  });
   return user ? (
     <>
       <Header />
