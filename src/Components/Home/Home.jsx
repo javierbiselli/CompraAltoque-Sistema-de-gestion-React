@@ -1,13 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable array-callback-return */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "./home.module.css";
-import { getProducts } from "../../Redux/products/thunks";
+import { getProducts, editAllProductsPrice } from "../../Redux/products/thunks";
 import Product from "../Shared/Product/Product";
-import { useState } from "react";
 import { tokenListener } from "../../firebase";
 import { getAuth } from "../../Redux/auth/thunks";
+import Modal from "../Shared/Modal/Modal";
+import { joiResolver } from "@hookform/resolvers/joi";
+import Joi from "joi";
+import { useForm } from "react-hook-form";
+import Input from "../Shared/Input/Input";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -38,6 +42,23 @@ const Home = () => {
     (product) => product.shopId._id === userData.shopId
   );
 
+  const editPercentSchema = Joi.object({
+    percent: Joi.number().min(1).max(100).messages({
+      "number.min": "Minimo: 1",
+      "number.max": "Maximo: 100",
+      "number.base": "Este campo es obligatorio",
+    }),
+    hasDiscount: Joi.boolean(),
+  });
+
+  const {
+    register,
+    formState: { errors },
+  } = useForm({
+    mode: "onChange",
+    resolver: joiResolver(editPercentSchema),
+  });
+
   const calculateDiscount = (discountPercentage, originalPrice) => {
     const discount = discountPercentage;
     const price = originalPrice;
@@ -54,6 +75,28 @@ const Home = () => {
             return -1;
           }
           if (a.name > b.name) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      case "highStock":
+        listProducts.sort((a, b) => {
+          if (a.stock > b.stock) {
+            return -1;
+          }
+          if (a.stock < b.stock) {
+            return 1;
+          }
+          return 0;
+        });
+        break;
+      case "lowStock":
+        listProducts.sort((a, b) => {
+          if (a.stock < b.stock) {
+            return -1;
+          }
+          if (a.stock > b.stock) {
             return 1;
           }
           return 0;
@@ -178,6 +221,9 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [click, setClick] = useState(false);
 
+  const [openModal, setOpenModal] = useState(false);
+  const [percent, setPercent] = useState(0);
+
   const handleSearchBar = () => {
     setClick(true);
     if (search.length > 1) {
@@ -202,6 +248,28 @@ const Home = () => {
       }
     });
     setProducts(searchResult);
+  };
+
+  const editAllPrices = () => {
+    const confirmMessage = `¿Vas a aplicar un aumento del ${percent}% en todos tus productos (${listProducts.length}), estas seguro?`;
+    const confirmed = window.confirm(confirmMessage);
+    if (!confirmed) return;
+    try {
+      dispatch(editAllProductsPrice(userData.shopId, percent / 100 + 1)).then(
+        (response) => {
+          console.log(response);
+          if (!response.error) {
+            setOpenModal(false);
+            alert("Productos editados");
+            dispatch(getProducts());
+          } else {
+            alert(`Ocurrio un error "${response.message}"`);
+          }
+        }
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -252,6 +320,7 @@ const Home = () => {
                     price={product.price}
                     description={product.description}
                     category={product.category}
+                    subCategory={product.subCategory}
                     hasDiscount={product.hasDiscount}
                     discountPercentage={product.discountPercentage}
                     discountValidDate={product.discountValidDate}
@@ -269,53 +338,93 @@ const Home = () => {
           <div className={styles.mainContainer}>
             <h3 className={styles.homeContainerH3}>Productos</h3>
             <div className={styles.orderBySelect}>
-              <p>Ordenar por:</p>
-              <select
-                onChange={(e) => {
-                  const key = e.target.value;
-                  setSort(key);
-                }}
-                defaultValue="none"
+              <div style={{ textAlign: "center" }}>
+                <p style={{ fontWeight: "bold" }}>Ordenar por:</p>
+                <select
+                  onChange={(e) => {
+                    const key = e.target.value;
+                    setSort(key);
+                  }}
+                  defaultValue="none"
+                >
+                  <option value="none" disabled>
+                    Seleccione
+                  </option>
+                  <option value="name">Nombre</option>
+                  <option value="highStock">Mayor stock</option>
+                  <option value="lowStock">Menor stock</option>
+                  <option value="hasStar">Destacados</option>
+                  <option value="price">Precio mas bajo</option>
+                  <option value="priceHigh">Precio mas alto</option>
+                  <option value="category">Categoria</option>
+                  <option value="hasDiscount">Con descuento</option>
+                  <option value="hasNotDiscount">Sin descuento</option>
+                  <option value="isActive">Activos</option>
+                  <option value="isInactive">Inactivos</option>
+                </select>
+              </div>
+              <button
+                className={styles.editPriceButton}
+                onClick={() => setOpenModal(true)}
               >
-                <option value="none" disabled>
-                  Seleccione
-                </option>
-                <option value="name">Nombre</option>
-                <option value="hasStar">Destacados</option>
-                <option value="price">Precio mas bajo</option>
-                <option value="priceHigh">Precio mas alto</option>
-                <option value="category">Categoria</option>
-                <option value="hasDiscount">Con descuento</option>
-                <option value="hasNotDiscount">Sin descuento</option>
-                <option value="isActive">Activos</option>
-                <option value="isInactive">Inactivos</option>
-              </select>
+                Aumentar precios
+              </button>
             </div>
           </div>
-          {listProducts.length === 0
-            ? 'No hay productos, podes agregar haciendo click en "Agregar productos"'
-            : listProducts.map((products) => (
-                <Product
-                  key={products._id}
-                  id={products._id}
-                  name={products.name}
-                  image={products.image}
-                  price={products.price}
-                  description={products.description}
-                  category={products.category}
-                  hasDiscount={products.hasDiscount}
-                  discountPercentage={products.discountPercentage}
-                  discountValidDate={products.discountValidDate}
-                  isActive={products.isActive}
-                  stock={products.stock}
-                  hasPromotion={products.hasPromotion}
-                  promotionMessage={products.promotionMessage}
-                  promotionValidDate={products.promotionValidDate}
-                  hasStar={products.hasStar}
-                />
-              ))}
+          <div className={styles.listProductsContainer}>
+            {listProducts.length === 0
+              ? 'No hay productos, podes agregar haciendo click en "Agregar productos"'
+              : listProducts.map((products) => (
+                  <Product
+                    key={products._id}
+                    id={products._id}
+                    name={products.name}
+                    image={products.image}
+                    price={products.price}
+                    description={products.description}
+                    category={products.category}
+                    subCategory={products.subCategory}
+                    hasDiscount={products.hasDiscount}
+                    discountPercentage={products.discountPercentage}
+                    discountValidDate={products.discountValidDate}
+                    isActive={products.isActive}
+                    stock={products.stock}
+                    hasPromotion={products.hasPromotion}
+                    promotionMessage={products.promotionMessage}
+                    promotionValidDate={products.promotionValidDate}
+                    hasStar={products.hasStar}
+                  />
+                ))}
+          </div>
         </>
       )}
+      <Modal
+        isOpen={openModal}
+        closeButton={"Cerrar"}
+        handleClose={() => setOpenModal(false)}
+      >
+        <div className={styles.priceModal}>
+          <h3>Aumento general de precios</h3>
+          Quiero aumentar el precio de todos mis productos en {percent}%:
+          <div>
+            <form>
+              <Input
+                type={"number"}
+                name={"percent"}
+                placeholder={"Porcentaje"}
+                register={register}
+                error={errors.percent?.message}
+                {...register("percent", {
+                  onChange: (e) => {
+                    setPercent(e.target.value);
+                  },
+                })}
+              />
+            </form>
+          </div>
+          <button onClick={editAllPrices}>Aumentar</button>
+        </div>
+      </Modal>
     </div>
   );
 };

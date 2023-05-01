@@ -38,6 +38,8 @@ const AddProduct = () => {
     "Alimentos y accesorios para mascotas",
   ];
 
+  const subSelect = ["Lavandina", "Perfumina"];
+
   const dispatch = useDispatch();
 
   const userData = JSON.parse(window.sessionStorage.getItem("userData"));
@@ -47,9 +49,13 @@ const AddProduct = () => {
 
   const [clicked, setClicked] = useState(false);
 
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState(
+    userData.name === "DobleJota" ? "Limpieza y desinfeccion" : ""
+  );
+  const [subCategory, setSubCategory] = useState("");
 
   const [price, setPrice] = useState(0);
+  const [stock, setStock] = useState(0);
   const [discount, setDiscount] = useState(0);
 
   const calculateDiscount = () => {
@@ -73,10 +79,22 @@ const AddProduct = () => {
           "any.required": "Este campo es obligatorio",
         })
       : Joi.string(),
+    subCategory:
+      category === "Limpieza y desinfeccion" && !subCategory
+        ? Joi.string().required().messages({
+            "any.required": "Este campo es obligatorio",
+          })
+        : Joi.string(),
     description: Joi.string().required().min(15).max(200).messages({
       "string.min": "La descripcion debe tener al menos 15 caracteres",
       "string.max": "La descripcion no debe tener mas de 200 caracteres",
       "string.empty": "Este campo es obligatorio",
+    }),
+    stock: Joi.number().min(-9999).max(9999).messages({
+      "number.min": "Maximo stock negativo: -9999",
+      "number.max": "Maximo stock: 9999",
+      "number.base":
+        "Este campo es obligatorio (al menos debe haber 0 stock o stock negativo hasta -9999)",
     }),
     hasDiscount: Joi.boolean(),
     discountPercentage: clicked
@@ -171,26 +189,28 @@ const AddProduct = () => {
     const keywords = extractKeywords(data);
     data.keywords = keywords;
     try {
-      dispatch(addProduct(data, img, userData.shopId, category)).then(
-        (response) => {
-          console.log(response);
-          if (!response.error) {
-            alert("Producto agregado con exito");
-            reset();
-            setCategory("");
-            setUrl("");
-            setClicked(false);
-          } else {
-            alert(`Ocurrio un error "${response.message}"`);
-          }
+      dispatch(
+        addProduct(data, img, userData.shopId, category, subCategory)
+      ).then((response) => {
+        console.log(response);
+        if (!response.error) {
+          alert("Producto agregado con exito");
+          reset();
+          setCategory("");
+          setUrl("");
+          setClicked(false);
+        } else {
+          alert(`Ocurrio un error "${response.message}"`);
         }
-      );
+      });
     } catch (error) {
       console.log(error);
     }
     setPrice(null);
     setDiscount(null);
   };
+
+  console.log(errors);
 
   return (
     <div className={styles.addProductContainer}>
@@ -256,7 +276,12 @@ const AddProduct = () => {
               ? styles.selectCategoryError
               : styles.selectCategory
           }
-          defaultValue="SELECCIONE UNA"
+          defaultValue={
+            userData.name === "DobleJota"
+              ? "Limpieza y desinfeccion"
+              : "SELECCIONE UNA"
+          }
+          disabled={userData.name === "DobleJota" && true}
         >
           <option value="SELECCIONE UNA" disabled>
             SELECCIONE UNA
@@ -273,6 +298,36 @@ const AddProduct = () => {
           <p className={styles.error}>{errors.category?.message}</p>
         ) : (
           ""
+        )}
+        {category === "Limpieza y desinfeccion" && (
+          <>
+            <p>Sub categoria:</p>
+            <select
+              onChange={(e) => setSubCategory(e.target.value)}
+              className={
+                !subCategory && errors.subCategory
+                  ? styles.selectCategoryError
+                  : styles.selectCategory
+              }
+              defaultValue="SELECCIONE UNA"
+            >
+              <option value="SELECCIONE UNA" disabled>
+                SELECCIONE UNA
+              </option>
+              {subSelect.map((options) => {
+                return (
+                  <option key={options} value={options}>
+                    {options}
+                  </option>
+                );
+              })}
+            </select>
+            {errors.subCategory ? (
+              <p className={styles.error}>{errors.subCategory?.message}</p>
+            ) : (
+              ""
+            )}
+          </>
         )}
         <Input
           type={"text"}
@@ -296,6 +351,23 @@ const AddProduct = () => {
           ejemplo: el tamano del producto, el sabor, la marca, caracteristicas
           especiales, etc
         </p>
+        <Input
+          type={"number"}
+          name={"stock"}
+          placeholder={"Stock (unidad)"}
+          register={register}
+          error={errors.stock?.message}
+          {...register("stock", {
+            onChange: (e) => {
+              setStock(e.target.value);
+            },
+          })}
+        />
+        {category === "Limpieza y desinfeccion" && (
+          <p style={{ marginBottom: 15, fontWeight: "bold" }}>
+            {Math.floor(stock / 12)} packs x12 y {stock % 12} u.
+          </p>
+        )}
         <div className={styles.discountContainer}>
           <div className={styles.hasDiscountContainer}>
             <p>Tiene descuento:</p>

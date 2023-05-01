@@ -39,6 +39,8 @@ const EditProduct = () => {
     "Alimentos y accesorios para mascotas",
   ];
 
+  const subSelect = ["Lavandina", "Perfumina"];
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -48,6 +50,9 @@ const EditProduct = () => {
   const [url, setUrl] = useState("");
 
   const [category, setCategory] = useState(productData.category);
+  const [subCategory, setSubCategory] = useState(productData.subCategory);
+
+  const [stock, setStock] = useState(productData.stock);
 
   useEffect(() => {
     setUrl(productData.image);
@@ -92,10 +97,17 @@ const EditProduct = () => {
       "number.base": "Este campo es obligatorio",
     }),
     category: Joi.string(),
+    subCategory: Joi.string(),
     description: Joi.string().required().min(15).max(200).messages({
       "string.min": "La descripcion debe tener al menos 15 caracteres",
       "string.max": "La descripcion no debe tener mas de 200 caracteres",
       "string.empty": "Este campo es obligatorio",
+    }),
+    stock: Joi.number().min(-9999).max(9999).messages({
+      "number.min": "Maximo stock negativo: -9999",
+      "number.max": "Maximo stock: 9999",
+      "number.base":
+        "Este campo es obligatorio (al menos debe haber 0 stock o stock negativo hasta -9999)",
     }),
     isActive: Joi.boolean(),
     hasDiscount: Joi.boolean(),
@@ -115,7 +127,7 @@ const EditProduct = () => {
       price: productData.price,
       image: productData.image,
       description: productData.description,
-      // category: productData.category,
+      stock: productData.stock,
       isActive: productData.isActive,
       hasDiscount: productData.hasDiscount,
       discountPercentage: productData.discountPercentage,
@@ -152,16 +164,16 @@ const EditProduct = () => {
     data.keywords = keywords;
     const img = url;
     try {
-      dispatch(editProduct(data, productData.id, img, category)).then(
-        (response) => {
-          if (!response.error) {
-            alert("Producto modificado correctamente");
-            navigate("/inicio");
-          } else {
-            alert(`${response.message}`);
-          }
+      dispatch(
+        editProduct(data, productData.id, img, category, subCategory)
+      ).then((response) => {
+        if (!response.error) {
+          alert("Producto modificado correctamente");
+          navigate("/inicio");
+        } else {
+          alert(`${response.message}`);
         }
-      );
+      });
     } catch (error) {
       console.log(error);
     }
@@ -252,6 +264,26 @@ const EditProduct = () => {
             })}
           </select>
         </div>
+        {category === "Limpieza y desinfeccion" && (
+          <div className={styles.editInputContainer}>
+            <label htmlFor="subCategory">
+              Sub categoria: <span style={{ color: "red" }}>*</span>
+            </label>
+            <select
+              onChange={(e) => setSubCategory(e.target.value)}
+              defaultValue={subCategory}
+              className={styles.selectCategory}
+            >
+              {subSelect.map((options) => {
+                return (
+                  <option key={options} value={options}>
+                    {options}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+        )}
         <div className={styles.editInputContainer}>
           <label htmlFor="description">
             Descripcion: <span style={{ color: "red" }}>*</span>
@@ -263,6 +295,35 @@ const EditProduct = () => {
             register={register}
             error={errors.description?.message}
           />
+        </div>
+        <div className={styles.editInputContainer}>
+          <label htmlFor="stock">
+            Stock: <span style={{ color: "red" }}>*</span>
+          </label>
+          <Input
+            type={"number"}
+            name={"stock"}
+            placeholder={"Stock (unidad)"}
+            register={register}
+            error={errors.stock?.message}
+            {...register("stock", {
+              onChange: (e) => {
+                setStock(e.target.value);
+              },
+            })}
+          />
+          {category === "Limpieza y desinfeccion" && (
+            <p
+              style={{
+                marginTop: 5,
+                marginBottom: 20,
+                fontWeight: "bold",
+                alignSelf: "flex-start",
+              }}
+            >
+              {Math.floor(stock / 12)} packs x12 y {stock % 12} unidades
+            </p>
+          )}
         </div>
         <input
           type="submit"

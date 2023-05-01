@@ -89,7 +89,7 @@ export const deleteProduct = (productId) => {
   };
 };
 
-export const addProduct = (product, image, shopId, category) => {
+export const addProduct = (product, image, shopId, category, subCategory) => {
   return async (dispatch) => {
     dispatch(addProductPending());
     try {
@@ -108,6 +108,7 @@ export const addProduct = (product, image, shopId, category) => {
             image: image,
             description: product.description,
             category: category,
+            subCategory: subCategory,
             isActive: true,
             hasDiscount: product.hasDiscount,
             discountPercentage: product.discountPercentage,
@@ -138,7 +139,13 @@ export const addProduct = (product, image, shopId, category) => {
   };
 };
 
-export const editProduct = (product, productId, image, category) => {
+export const editProduct = (
+  product,
+  productId,
+  image,
+  category,
+  subCategory
+) => {
   return async (dispatch) => {
     dispatch(editProductPending());
     try {
@@ -157,6 +164,7 @@ export const editProduct = (product, productId, image, category) => {
             image: image,
             description: product.description,
             category: category,
+            subCategory: subCategory,
             isActive: product.isActive,
             hasDiscount: product.hasDiscount,
             discountPercentage: product.discountPercentage,
@@ -176,6 +184,57 @@ export const editProduct = (product, productId, image, category) => {
       }
       dispatch(editProductSuccess(res.data));
       return res;
+    } catch (error) {
+      dispatch(editProductError(error.toString()));
+      return {
+        error: true,
+        message: error,
+      };
+    }
+  };
+};
+
+export const editAllProductsPrice = (shopId, percent) => {
+  return async (dispatch) => {
+    dispatch(editProductPending());
+    try {
+      const productsResponse = await dispatch(getProducts());
+      if (productsResponse.error) {
+        throw productsResponse.message;
+      }
+      const updatedProductsPromises = productsResponse.data.map(
+        async (product) => {
+          if (product.shopId._id === shopId) {
+            const newPrice = Math.floor(product.price * percent);
+            const token = JSON.parse(sessionStorage.getItem("token"));
+            const response = await fetch(
+              `${process.env.REACT_APP_API_URL}/products/${product._id}`,
+              {
+                method: "PUT",
+                headers: {
+                  "Content-type": "application/json",
+                  token,
+                },
+                body: JSON.stringify({
+                  price: newPrice,
+                }),
+              }
+            );
+            const res = await response.json();
+            if (res.error) {
+              throw res.message;
+            }
+            console.log(`Price of ${product.name} updated to ${newPrice}`);
+            console.log(res);
+            return res;
+          }
+        }
+      );
+      const updatedProductsResponses = await Promise.all(
+        updatedProductsPromises
+      );
+      dispatch(editProductSuccess(updatedProductsResponses));
+      return { error: false };
     } catch (error) {
       dispatch(editProductError(error.toString()));
       return {

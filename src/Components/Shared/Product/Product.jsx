@@ -30,6 +30,8 @@ const Product = (props) => {
       image: props.image,
       description: props.description,
       category: props.category,
+      subCategory: props.subCategory,
+      stock: props.stock,
       isActive: props.isActive,
       hasDiscount: props.hasDiscount,
       discountPercentage: props.discountPercentage,
@@ -258,7 +260,7 @@ const Product = (props) => {
         <div
           className={props.isActive === false ? styles.inactiveProduct : ""}
         ></div>
-        <div className={styles.productInnerContainer}>
+        <div className={styles.productInnerContainerModal}>
           <div
             className={styles.imgContainer}
             onClick={() => setOpenModal(true)}
@@ -276,6 +278,10 @@ const Product = (props) => {
           <div className={styles.productDataContainer}>
             <h3>{props.name}</h3>
             <h4>Categoria: {props.category}</h4>
+            {props.category === "Limpieza y desinfeccion" && (
+              <h4>Sub categoria: {props.subCategory}</h4>
+            )}
+            <h4>Destacado: {props.hasStar ? "si" : "no"}</h4>
             <h4>
               Descuento:{" "}
               {props.hasDiscount ? "%" + props.discountPercentage : "no"}
@@ -295,6 +301,15 @@ const Product = (props) => {
               <p>${props.price}</p>
             )}
             <h4>Descripcion: {props.description}</h4>
+            {props.category === "Limpieza y desinfeccion" ? (
+              <h4 style={{ fontWeight: "bolder" }}>
+                Stock: {props.stock}u. ({Math.floor(props.stock / 12)} packs x12
+                y {props.stock % 12}u.)
+              </h4>
+            ) : (
+              <h4 style={{ fontWeight: "bolder" }}>Stock: {props.stock} u.</h4>
+            )}
+
             <div className={styles.buttonModalContainer}>
               <button
                 className={styles.discountButton}
