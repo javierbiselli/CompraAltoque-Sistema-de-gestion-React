@@ -7,7 +7,8 @@ import {
   GET_AUTH_ERROR,
   CLEAN_ERROR,
   SET_AUTHENTICATION,
-  IS_LOGGED
+  IS_LOGGED,
+  REFRESH_TOKEN
 } from './constants';
 
 const initialState = {
@@ -81,6 +82,12 @@ export const authReducer = (state = initialState, action) => {
         isLoading: false,
         isLogged: true
       };
+    }
+    case REFRESH_TOKEN: {
+      return {
+        ...state,
+        authenticated: action.payload
+      }
     }
     default: {
       return state;
