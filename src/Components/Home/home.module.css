@@ -113,6 +113,12 @@
 .editPriceButton:hover {
   scale: 1.03;
 }
+
+.tableButtonContainer {
+  text-align: center;
+  width: 100%;
+  margin-bottom: 20px;
+}
 @media only screen and (min-width: 768px) {
   .homeContainer {
     flex-direction: row;

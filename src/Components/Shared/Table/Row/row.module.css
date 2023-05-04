@@ -1,0 +1,64 @@
+.rowContainer td:nth-child(1) {
+  width: 30%;
+}
+
+.rowContainer td:nth-child(4) {
+  width: 30%;
+}
+
+.rowContainer td:nth-child(2),
+.rowContainer td:nth-child(3),
+.rowContainer td:nth-child(5) {
+  width: 15%;
+}
+
+.rowContainer td input,
+.rowContainerInactive td input,
+.rowContainerStar td input {
+  padding: 5px;
+  margin: 0;
+  font-size: 0.7rem;
+}
+
+.tableContainer tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.rowContainerInactive {
+  background-color: rgba(51, 51, 51, 0.4) !important;
+}
+
+.rowContainerStar {
+  background-color: rgba(255, 215, 0, 0.4) !important;
+}
+
+.tableButton {
+  font-size: large;
+  display: grid;
+  background-color: transparent;
+  place-items: center;
+  border: none;
+  border-radius: 50%;
+  color: #000b;
+  font-weight: bolder;
+  transition: 0.1s;
+}
+
+.loader {
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .rowContainer td input,
+  .rowContainerInactive td input,
+  .rowContainerStar td input {
+    padding: 15px;
+    font-size: 0.8rem;
+  }
+}

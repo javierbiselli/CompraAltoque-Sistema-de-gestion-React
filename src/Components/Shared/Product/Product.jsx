@@ -9,6 +9,7 @@ import styles from "./product.module.css";
 import { Link } from "react-router-dom";
 import noImage from "../../../Resources/Images/productoSinImagen.png";
 import { MdEdit, MdDelete } from "react-icons/md";
+import { BiStar } from "react-icons/bi";
 
 const Product = (props) => {
   const dispatch = useDispatch();
@@ -368,7 +369,10 @@ const Product = (props) => {
                 setStarState(true);
               }}
             >
-              {"\u2B50"}
+              <BiStar
+                title="Destacar producto"
+                style={{ fontSize: "1.5rem" }}
+              />
             </button>
             {props.hasStar && props.isActive && (
               <span
@@ -401,7 +405,7 @@ const Product = (props) => {
                 );
               }}
             >
-              <MdEdit />
+              <MdEdit title="Editar producto" />
             </Link>
             <button
               className={styles.deleteButton}
@@ -410,7 +414,7 @@ const Product = (props) => {
                 setDeleteState(true);
               }}
             >
-              <MdDelete />
+              <MdDelete title="Borrar producto" />
             </button>
           </div>
         </div>

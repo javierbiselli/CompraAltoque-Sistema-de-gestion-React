@@ -12,6 +12,8 @@ import { joiResolver } from "@hookform/resolvers/joi";
 import Joi from "joi";
 import { useForm } from "react-hook-form";
 import Input from "../Shared/Input/Input";
+import Table from "../Shared/Table/Table";
+import Loader from "../Shared/Loader/Loader";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -224,6 +226,8 @@ const Home = () => {
   const [openModal, setOpenModal] = useState(false);
   const [percent, setPercent] = useState(0);
 
+  const [tableView, setTableView] = useState(false);
+
   const handleSearchBar = () => {
     setClick(true);
     if (search.length > 1) {
@@ -274,8 +278,8 @@ const Home = () => {
 
   return (
     <div className={styles.homeContainer}>
-      {isLoading ? (
-        <p>cargando...</p>
+      {isLoading && !tableView ? (
+        <Loader show={isLoading} />
       ) : (
         <>
           <div className={styles.searchBarContainer}>
@@ -370,32 +374,44 @@ const Home = () => {
                 Aumentar precios
               </button>
             </div>
+            <div className={styles.tableButtonContainer}>
+              <button
+                onClick={() => setTableView(!tableView)}
+                className={styles.searchButton}
+              >
+                {tableView ? "Vista individual" : "Vista de tabla"}
+              </button>
+            </div>
           </div>
-          <div className={styles.listProductsContainer}>
-            {listProducts.length === 0
-              ? 'No hay productos, podes agregar haciendo click en "Agregar productos"'
-              : listProducts.map((products) => (
-                  <Product
-                    key={products._id}
-                    id={products._id}
-                    name={products.name}
-                    image={products.image}
-                    price={products.price}
-                    description={products.description}
-                    category={products.category}
-                    subCategory={products.subCategory}
-                    hasDiscount={products.hasDiscount}
-                    discountPercentage={products.discountPercentage}
-                    discountValidDate={products.discountValidDate}
-                    isActive={products.isActive}
-                    stock={products.stock}
-                    hasPromotion={products.hasPromotion}
-                    promotionMessage={products.promotionMessage}
-                    promotionValidDate={products.promotionValidDate}
-                    hasStar={products.hasStar}
-                  />
-                ))}
-          </div>
+          {tableView ? (
+            <Table listProducts={listProducts} />
+          ) : (
+            <div className={styles.listProductsContainer}>
+              {listProducts.length === 0
+                ? 'No hay productos, podes agregar haciendo click en "Agregar productos"'
+                : listProducts.map((products) => (
+                    <Product
+                      key={products._id}
+                      id={products._id}
+                      name={products.name}
+                      image={products.image}
+                      price={products.price}
+                      description={products.description}
+                      category={products.category}
+                      subCategory={products.subCategory}
+                      hasDiscount={products.hasDiscount}
+                      discountPercentage={products.discountPercentage}
+                      discountValidDate={products.discountValidDate}
+                      isActive={products.isActive}
+                      stock={products.stock}
+                      hasPromotion={products.hasPromotion}
+                      promotionMessage={products.promotionMessage}
+                      promotionValidDate={products.promotionValidDate}
+                      hasStar={products.hasStar}
+                    />
+                  ))}
+            </div>
+          )}
         </>
       )}
       <Modal

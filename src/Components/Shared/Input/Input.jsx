@@ -14,6 +14,9 @@ const Input = ({
   onClick,
   min,
   max,
+  defaultValue,
+  table,
+  title,
 }) => {
   return (
     <div className={styles.container}>
@@ -23,6 +26,15 @@ const Input = ({
         placeholder={placeholder}
         {...register(name)}
         className={error ? styles.errorRed : styles.input}
+        style={
+          table && {
+            borderRadius: "0",
+            boxShadow: "none",
+            textAlign: "center",
+            backgroundColor: "transparent",
+            border: error ? "#ff0000 solid 2px" : "none",
+          }
+        }
         onBlur={onBlur}
         disabled={disabled}
         pattern={pattern}
@@ -30,8 +42,10 @@ const Input = ({
         onClick={onClick}
         min={min}
         max={max}
+        defaultValue={defaultValue}
+        title={title}
       ></input>
-      {error && <p className={styles.error}>{error}</p>}
+      {error && !table && <p className={styles.error}>{error}</p>}
     </div>
   );
 };
