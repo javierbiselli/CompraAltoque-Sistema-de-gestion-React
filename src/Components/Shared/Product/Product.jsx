@@ -10,8 +10,9 @@ import { Link } from "react-router-dom";
 import noImage from "../../../Resources/Images/productoSinImagen.png";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { BiStar } from "react-icons/bi";
+import ModalProduct from "../ModalProduct/ModalProduct";
 
-const Product = (props) => {
+const Product = ({ productData }) => {
   const dispatch = useDispatch();
 
   const [openModal, setOpenModal] = useState(false);
@@ -26,17 +27,17 @@ const Product = (props) => {
   const { handleSubmit, register } = useForm({
     mode: "onChange",
     defaultValues: {
-      name: props.name,
-      price: props.price,
-      image: props.image,
-      description: props.description,
-      category: props.category,
-      subCategory: props.subCategory,
-      stock: props.stock,
-      isActive: props.isActive,
-      hasDiscount: props.hasDiscount,
-      discountPercentage: props.discountPercentage,
-      discountValidDate: props.discountValidDate,
+      name: productData.name,
+      price: productData.price,
+      image: productData.image,
+      description: productData.description,
+      category: productData.category,
+      subCategory: productData.subCategory,
+      stock: productData.stock,
+      isActive: productData.isActive,
+      hasDiscount: productData.hasDiscount,
+      discountPercentage: productData.discountPercentage,
+      discountValidDate: productData.discountValidDate,
     },
   });
 
@@ -47,17 +48,17 @@ const Product = (props) => {
         .slice(0, 19);
 
     if (
-      props.discountValidDate &&
-      props.discountValidDate < now(new Date()) &&
-      props.hasDiscount &&
-      props.isActive
+      productData.discountValidDate &&
+      productData.discountValidDate < now(new Date()) &&
+      productData.hasDiscount &&
+      productData.isActive
     ) {
       const data = { hasDiscount: false, discountValidDate: null };
-      console.log(`${props.name} descuento eliminado`);
-      dispatch(editProduct(data, props.id)).then((response) => {
+      console.log(`${productData.name} descuento eliminado`);
+      dispatch(editProduct(data, productData.id)).then((response) => {
         if (!response.error) {
           alert(
-            `Se desactivo el descuento de %${props.discountPercentage} en ${props.name} porque dejo de tener validez (valido hasta ${props.discountValidDate})`
+            `Se desactivo el descuento de %${productData.discountPercentage} en ${productData.name} porque dejo de tener validez (valido hasta ${productData.discountValidDate})`
           );
         } else {
           alert(`Ocurrio un error "${response.message}"`);
@@ -73,8 +74,8 @@ const Product = (props) => {
   }, []);
 
   const calculateDiscount = () => {
-    const discount = props.discountPercentage;
-    const price = props.price;
+    const discount = productData.discountPercentage;
+    const price = productData.price;
     return Math.round(price - (discount / 100) * price);
   };
 
@@ -102,11 +103,11 @@ const Product = (props) => {
   };
 
   const handleProductDeactivation = () => {
-    const data = { isActive: !props.isActive };
+    const data = { isActive: !productData.isActive };
     if (
       window.confirm(
         `Estas seguro que queres ${
-          props.isActive
+          productData.isActive
             ? "desactivar este producto? (si desactivas el producto, dejara de estar disponible para los clientes, lo podes volver a activar en cualquier momento)"
             : "activar este producto?"
         }`
@@ -117,7 +118,7 @@ const Product = (props) => {
           if (!response.error) {
             alert(
               `Producto ${
-                props.isActive ? "desactivado" : "activado"
+                productData.isActive ? "desactivado" : "activado"
               } correctamente`
             );
             setProductId(null);
@@ -139,7 +140,7 @@ const Product = (props) => {
         if (!response.error) {
           alert(
             `Descuento ${
-              props.hasDiscount ? "modificado" : "agregado"
+              productData.hasDiscount ? "modificado" : "agregado"
             } correctamente`
           );
           setProductId(null);
@@ -157,14 +158,19 @@ const Product = (props) => {
     setChildren(
       <section className={styles.discountModalContainer}>
         <h4>
-          {props.hasDiscount ? "Modificar descuento" : "Agregar descuento"}
+          {productData.hasDiscount
+            ? "Modificar descuento"
+            : "Agregar descuento"}
         </h4>
         <p style={{ fontSize: "0.9rem", margin: "10px 0" }}>
           Al activar el descuento se le enviara una notificacion a los clientes
           que tengan instalada la aplicacion
         </p>
-        <h4>{props.name}</h4>
-        <form onSubmit={handleSubmit(handleProductDiscount)} key={props.id}>
+        <h4>{productData.name}</h4>
+        <form
+          onSubmit={handleSubmit(handleProductDiscount)}
+          key={productData.id}
+        >
           <div className={styles.hasDicountModalContainer}>
             <label htmlFor="hasDiscount">Descuento:</label>
             <Input type={"checkbox"} name={"hasDiscount"} register={register} />
@@ -194,11 +200,11 @@ const Product = (props) => {
   };
 
   const handleStar = () => {
-    const data = { hasStar: !props.hasStar };
+    const data = { hasStar: !productData.hasStar };
     if (
       window.confirm(
         `Estas seguro que queres ${
-          props.hasStar
+          productData.hasStar
             ? "eliminar este producto de destacados?"
             : "agregar este producto a destacados? (si lo agregas a destacados, aparecera primero en la lista de productos cuando el cliente entre en la app)"
         }`
@@ -209,7 +215,7 @@ const Product = (props) => {
           if (!response.error) {
             alert(
               `Producto ${
-                props.hasStar ? "eliminado de destacados" : "destacado"
+                productData.hasStar ? "eliminado de destacados" : "destacado"
               } correctamente`
             );
             setProductId(null);
@@ -245,119 +251,13 @@ const Product = (props) => {
     setStarState(false);
   }
 
-  const setModalContent = () => {
-    setChildren(
-      <section className={styles.modalProductContainer}>
-        <Link
-          to={`/edit/${props.id}`}
-          className={styles.editButtonModal}
-          onClick={() => {
-            setProductId(props.id);
-            window.sessionStorage.setItem("productData", JSON.stringify(props));
-          }}
-        >
-          Editar producto
-        </Link>
-        <div
-          className={props.isActive === false ? styles.inactiveProduct : ""}
-        ></div>
-        <div className={styles.productInnerContainerModal}>
-          <div
-            className={styles.imgContainer}
-            onClick={() => setOpenModal(true)}
-          >
-            {props.image ? (
-              <img
-                className={styles.imgModal}
-                src={props.image}
-                alt={props.alt}
-              />
-            ) : (
-              <img className={styles.noImg} src={noImage} alt={props.alt}></img>
-            )}
-          </div>
-          <div className={styles.productDataContainer}>
-            <h3>{props.name}</h3>
-            <h4>Categoria: {props.category}</h4>
-            {props.category === "Limpieza y desinfeccion" && (
-              <h4>Sub categoria: {props.subCategory}</h4>
-            )}
-            <h4>Destacado: {props.hasStar ? "si" : "no"}</h4>
-            <h4>
-              Descuento:{" "}
-              {props.hasDiscount ? "%" + props.discountPercentage : "no"}
-            </h4>
-            {props.hasDiscount ? (
-              <>
-                <p className={styles.priceDiscount}>${props.price}</p>
-                <p>${calculateDiscount()}</p>
-                <p>
-                  descuento valido hasta:{" "}
-                  {props.discountValidDate
-                    ? props.discountValidDate
-                    : "indeterminado"}
-                </p>
-              </>
-            ) : (
-              <p>${props.price}</p>
-            )}
-            <h4>Descripcion: {props.description}</h4>
-            {props.category === "Limpieza y desinfeccion" ? (
-              <h4 style={{ fontWeight: "bolder" }}>
-                Stock: {props.stock}u. ({Math.floor(props.stock / 12)} packs x12
-                y {props.stock % 12}u.)
-              </h4>
-            ) : (
-              <h4 style={{ fontWeight: "bolder" }}>Stock: {props.stock} u.</h4>
-            )}
-
-            <div className={styles.buttonModalContainer}>
-              <button
-                className={styles.discountButton}
-                onClick={() => {
-                  setProductId(props.id);
-                  setDiscountState(true);
-                }}
-              >
-                {props.hasDiscount
-                  ? "Modificar descuento"
-                  : "Agregar descuento"}
-              </button>
-              <button
-                className={styles.deactivateButton}
-                onClick={() => {
-                  setProductId(props.id);
-                  setDeactivationState(true);
-                }}
-              >
-                {props.isActive ? "Desactivar producto" : "Activar Producto"}
-              </button>
-              <button
-                className={styles.deleteModalButton}
-                onClick={() => {
-                  setProductId(props.id);
-                  setDeleteState(true);
-                }}
-              >
-                Eliminar producto
-              </button>
-            </div>
-            {!props.isActive && (
-              <p style={{ color: "red", marginTop: "7px" }}>
-                Producto inactivo
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
-    );
-  };
-
   return (
     <>
       <section
         className={
-          props.hasStar ? styles.productContainerStar : styles.productContainer
+          productData.hasStar
+            ? styles.productContainerStar
+            : styles.productContainer
         }
       >
         <div className={styles.productContainerHeader}>
@@ -365,7 +265,7 @@ const Product = (props) => {
             <button
               className={styles.starButton}
               onClick={() => {
-                setProductId(props.id);
+                setProductId(productData._id);
                 setStarState(true);
               }}
             >
@@ -374,7 +274,7 @@ const Product = (props) => {
                 style={{ fontSize: "1.5rem" }}
               />
             </button>
-            {props.hasStar && props.isActive && (
+            {productData.hasStar && productData.isActive && (
               <span
                 style={{
                   color: "green",
@@ -385,7 +285,7 @@ const Product = (props) => {
                 Producto destacado
               </span>
             )}
-            {!props.isActive && (
+            {!productData.isActive && (
               <p
                 style={{ color: "#444", fontStyle: "italic", fontSize: "1rem" }}
               >
@@ -395,13 +295,13 @@ const Product = (props) => {
           </div>
           <div className={styles.actionsContainer}>
             <Link
-              to={`/edit/${props.id}`}
+              to={`/edit/${productData._id}`}
               className={styles.editButton}
               onClick={() => {
-                setProductId(props.id);
+                setProductId(productData._id);
                 window.sessionStorage.setItem(
                   "productData",
-                  JSON.stringify(props)
+                  JSON.stringify(productData)
                 );
               }}
             >
@@ -410,7 +310,7 @@ const Product = (props) => {
             <button
               className={styles.deleteButton}
               onClick={() => {
-                setProductId(props.id);
+                setProductId(productData._id);
                 setDeleteState(true);
               }}
             >
@@ -419,66 +319,105 @@ const Product = (props) => {
           </div>
         </div>
         <div
-          className={props.isActive === false ? styles.inactiveProduct : ""}
+          className={
+            productData.isActive === false ? styles.inactiveProduct : ""
+          }
         ></div>
         <div className={styles.productInnerContainer}>
           <div
             className={styles.imgContainer}
             onClick={() => {
               setOpenModal(true);
-              setModalContent();
+              setChildren(
+                <ModalProduct
+                  productData={productData}
+                  calculateDiscount={calculateDiscount}
+                  setProductId={setProductId}
+                  setDiscountState={setDiscountState}
+                  setDeactivationState={setDeactivationState}
+                  setDeleteState={setDeleteState}
+                />
+              );
             }}
           >
-            {props.image ? (
-              <img className={styles.img} src={props.image} alt={props.alt} />
+            {productData.image ? (
+              <img
+                className={styles.img}
+                src={productData.image}
+                alt={productData.name}
+              />
             ) : (
-              <img className={styles.noImg} src={noImage} alt={props.alt}></img>
+              <img
+                className={styles.noImg}
+                src={noImage}
+                alt={"Producto sin imagen"}
+              ></img>
             )}
           </div>
           <div className={styles.productDataContainer}>
             <h3
               onClick={() => {
                 setOpenModal(true);
-                setModalContent();
+                setChildren(
+                  <ModalProduct
+                    productData={productData}
+                    calculateDiscount={calculateDiscount}
+                    setProductId={setProductId}
+                    setDiscountState={setDiscountState}
+                    setDeactivationState={setDeactivationState}
+                    setDeleteState={setDeleteState}
+                  />
+                );
               }}
             >
-              {props.name}
+              {productData.name}
             </h3>
             <h4
               onClick={() => {
                 setOpenModal(true);
-                setModalContent();
+                setChildren(
+                  <ModalProduct
+                    productData={productData}
+                    calculateDiscount={calculateDiscount}
+                    setProductId={setProductId}
+                    setDiscountState={setDiscountState}
+                    setDeactivationState={setDeactivationState}
+                    setDeleteState={setDeleteState}
+                  />
+                );
               }}
             >
-              {props.hasDiscount ? (
+              {productData.hasDiscount ? (
                 <>
                   <p>${calculateDiscount()}</p>
-                  <p className={styles.priceDiscount}>${props.price}</p>
+                  <p className={styles.priceDiscount}>${productData.price}</p>
                 </>
               ) : (
-                <p>${props.price}</p>
+                <p>${productData.price}</p>
               )}
             </h4>
             <div className={styles.productButtonContainer}>
               <button
                 className={styles.discountButton}
                 onClick={() => {
-                  setProductId(props.id);
+                  setProductId(productData._id);
                   setDiscountState(true);
                 }}
               >
-                {props.hasDiscount
+                {productData.hasDiscount
                   ? "Modificar descuento"
                   : "Agregar descuento"}
               </button>
               <button
                 className={styles.deactivateButton}
                 onClick={() => {
-                  setProductId(props.id);
+                  setProductId(productData._id);
                   setDeactivationState(true);
                 }}
               >
-                {props.isActive ? "Desactivar producto" : "Activar Producto"}
+                {productData.isActive
+                  ? "Desactivar producto"
+                  : "Activar Producto"}
               </button>
             </div>
           </div>

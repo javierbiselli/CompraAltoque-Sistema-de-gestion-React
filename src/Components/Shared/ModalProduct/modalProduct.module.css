@@ -1,0 +1,215 @@
+.productDataContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 16px;
+}
+
+.productDataContainer h3 {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: rgb(85, 85, 85);
+}
+
+.productDataContainer h4 {
+  padding: 2px 0;
+  font-size: 1.5rem;
+  font-weight: 900;
+  word-break: break-all;
+}
+
+.imgContainer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img,
+.noImg {
+  width: 100%;
+  min-width: 120px;
+  max-width: 300px;
+  height: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  margin: 5px 0;
+}
+
+.imgModal {
+  object-fit: contain;
+  max-height: 250px;
+  margin-top: 40px;
+}
+
+.priceDiscount {
+  text-decoration: line-through;
+  font-size: 1rem;
+  font-weight: lighter;
+  color: gray;
+  opacity: 0.75;
+}
+
+.deleteModalButton {
+  border: 1px solid transparent;
+  padding: 5px 10px;
+  background-color: transparent;
+  color: white;
+  font-weight: 600;
+  border-radius: 2px;
+  transition: 0.1s;
+  margin-top: 10px;
+}
+
+.deleteModalButton {
+  background-color: rgb(172, 0, 0);
+  border: 1px solid rgb(172, 0, 0);
+  color: white;
+}
+
+.deactivateButton:hover,
+.discountButton:hover,
+.discountButtonModal:hover,
+.deleteModalButton:hover,
+.editButtonModal:hover,
+.starButton:hover {
+  scale: 1.03;
+}
+
+.deactivateButton:active,
+.discountButton:active,
+.discountButtonModal:active,
+.deleteModalButton:active,
+.editButtonModal:active {
+  border: 1px solid transparent;
+  transform: scale(0.97);
+}
+
+.modalProductContainer {
+  text-align: start;
+}
+
+.productInnerContainerModal {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalProductContainer h4 {
+  font-size: 0.9rem;
+  color: rgb(39, 39, 39);
+  font-weight: 400;
+}
+
+.discountModalContainer {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.hasDicountModalContainer,
+.hasDiscountContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.discountButtonModal {
+  background-color: rgb(4, 105, 0);
+  color: white;
+  font-size: 0.9rem;
+  padding: 10px 20px;
+  border: 1px solid rgb(4, 105, 0);
+  border-radius: 5px;
+  margin-top: 10px;
+  transition: 0.1s;
+}
+
+.buttonModalContainer {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  margin: auto;
+}
+
+.editButtonModal {
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 7px;
+  background-color: transparent;
+  color: orangered;
+  border: 1px solid orangered;
+  padding: 10px 15px;
+  border-radius: 10px;
+  font-weight: bolder;
+  font-size: 0.9rem;
+  transition: 0.1s;
+}
+
+.deactivateButton,
+.discountButton,
+.deleteModalButton {
+  border: 1px solid transparent;
+  padding: 5px 10px;
+  background-color: transparent;
+  color: white;
+  font-weight: 600;
+  border-radius: 2px;
+  transition: 0.1s;
+  margin-top: 10px;
+}
+
+.discountButton {
+  background-color: green;
+}
+
+.deactivateButton {
+  border: 1px solid red;
+  background-color: red;
+}
+
+.deleteModalButton {
+  background-color: rgb(172, 0, 0);
+  border: 1px solid rgb(172, 0, 0);
+  color: white;
+}
+
+.deactivateButton:hover,
+.discountButton:hover,
+.discountButtonModal:hover,
+.deleteModalButton:hover,
+.editButtonModal:hover,
+.starButton:hover {
+  scale: 1.03;
+}
+
+.deactivateButton:active,
+.discountButton:active,
+.discountButtonModal:active,
+.deleteModalButton:active,
+.editButtonModal:active {
+  border: 1px solid transparent;
+  transform: scale(0.97);
+}
+
+@media only screen and (min-width: 768px) {
+  .modalProductContainer {
+    width: 100%;
+  }
+
+  .productInnerContainerModal {
+    flex-direction: row;
+  }
+
+  .imgContainer {
+    width: 60%;
+  }
+
+  .buttonModalContainer {
+    margin: 0;
+  }
+}

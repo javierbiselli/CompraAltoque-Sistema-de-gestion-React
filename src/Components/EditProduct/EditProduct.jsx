@@ -165,7 +165,7 @@ const EditProduct = () => {
     const img = url;
     try {
       dispatch(
-        editProduct(data, productData.id, img, category, subCategory)
+        editProduct(data, productData._id, img, category, subCategory)
       ).then((response) => {
         if (!response.error) {
           alert("Producto modificado correctamente");

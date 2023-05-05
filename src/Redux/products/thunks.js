@@ -224,8 +224,6 @@ export const editAllProductsPrice = (shopId, percent) => {
             if (res.error) {
               throw res.message;
             }
-            console.log(`Price of ${product.name} updated to ${newPrice}`);
-            console.log(res);
             return res;
           }
         }

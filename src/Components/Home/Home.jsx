@@ -54,6 +54,7 @@ const Home = () => {
   });
 
   const {
+    handleSubmit,
     register,
     formState: { errors },
   } = useForm({
@@ -224,6 +225,7 @@ const Home = () => {
   const [click, setClick] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
+  const [children, setChildren] = useState("");
   const [percent, setPercent] = useState(0);
 
   const [tableView, setTableView] = useState(false);
@@ -261,7 +263,6 @@ const Home = () => {
     try {
       dispatch(editAllProductsPrice(userData.shopId, percent / 100 + 1)).then(
         (response) => {
-          console.log(response);
           if (!response.error) {
             setOpenModal(false);
             alert("Productos editados");
@@ -315,26 +316,8 @@ const Home = () => {
                   <p>No se encontro ningun producto</p>
                 </div>
               ) : (
-                products.map((product) => (
-                  <Product
-                    key={product._id}
-                    id={product._id}
-                    name={product.name}
-                    image={product.image}
-                    price={product.price}
-                    description={product.description}
-                    category={product.category}
-                    subCategory={product.subCategory}
-                    hasDiscount={product.hasDiscount}
-                    discountPercentage={product.discountPercentage}
-                    discountValidDate={product.discountValidDate}
-                    isActive={product.isActive}
-                    stock={product.stock}
-                    hasPromotion={product.hasPromotion}
-                    promotionMessage={product.promotionMessage}
-                    promotionValidDate={product.promotionValidDate}
-                    hasStar={product.hasStar}
-                  />
+                products.map((product, index) => (
+                  <Product productData={product} key={index} />
                 ))
               )}
             </div>
@@ -384,31 +367,18 @@ const Home = () => {
             </div>
           </div>
           {tableView ? (
-            <Table listProducts={listProducts} />
+            <Table
+              listProducts={listProducts}
+              setOpenModal={setOpenModal}
+              setChildren={setChildren}
+              calculateDiscount={calculateDiscount}
+            />
           ) : (
             <div className={styles.listProductsContainer}>
               {listProducts.length === 0
                 ? 'No hay productos, podes agregar haciendo click en "Agregar productos"'
-                : listProducts.map((products) => (
-                    <Product
-                      key={products._id}
-                      id={products._id}
-                      name={products.name}
-                      image={products.image}
-                      price={products.price}
-                      description={products.description}
-                      category={products.category}
-                      subCategory={products.subCategory}
-                      hasDiscount={products.hasDiscount}
-                      discountPercentage={products.discountPercentage}
-                      discountValidDate={products.discountValidDate}
-                      isActive={products.isActive}
-                      stock={products.stock}
-                      hasPromotion={products.hasPromotion}
-                      promotionMessage={products.promotionMessage}
-                      promotionValidDate={products.promotionValidDate}
-                      hasStar={products.hasStar}
-                    />
+                : listProducts.map((products, index) => (
+                    <Product productData={products} key={index} />
                   ))}
             </div>
           )}
@@ -419,27 +389,31 @@ const Home = () => {
         closeButton={"Cerrar"}
         handleClose={() => setOpenModal(false)}
       >
-        <div className={styles.priceModal}>
-          <h3>Aumento general de precios</h3>
-          Quiero aumentar el precio de todos mis productos en {percent}%:
-          <div>
-            <form>
-              <Input
-                type={"number"}
-                name={"percent"}
-                placeholder={"Porcentaje"}
-                register={register}
-                error={errors.percent?.message}
-                {...register("percent", {
-                  onChange: (e) => {
-                    setPercent(e.target.value);
-                  },
-                })}
-              />
-            </form>
+        {children ? (
+          children
+        ) : (
+          <div className={styles.priceModal}>
+            <h3>Aumento general de precios</h3>
+            Quiero aumentar el precio de todos mis productos en {percent}%:
+            <div>
+              <form>
+                <Input
+                  type={"number"}
+                  name={"percent"}
+                  placeholder={"Porcentaje"}
+                  register={register}
+                  error={errors.percent?.message}
+                  {...register("percent", {
+                    onChange: (e) => {
+                      setPercent(e.target.value);
+                    },
+                  })}
+                />
+              </form>
+            </div>
+            <button onClick={handleSubmit(editAllPrices)}>Aumentar</button>
           </div>
-          <button onClick={editAllPrices}>Aumentar</button>
-        </div>
+        )}
       </Modal>
     </div>
   );

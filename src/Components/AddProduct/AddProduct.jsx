@@ -123,20 +123,6 @@ const AddProduct = () => {
     `${window.sessionStorage.getItem("userUid")}/${v4()}`
   );
 
-  // const deleteImg = () => {
-  //   const deleteRef = ref(
-  //     storage,
-  //     `${window.sessionStorage.getItem("userUid")}/$`
-  //   );
-  //   getMetadata(deleteRef)
-  //     .then((metadata) => {
-  //       console.log(metadata);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // };
-
   const uploadImg = () => {
     uploadBytes(storageRef, image)
       .then((snapshot) => {

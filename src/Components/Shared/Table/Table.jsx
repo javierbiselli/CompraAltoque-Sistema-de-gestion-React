@@ -2,7 +2,12 @@ import styles from "./table.module.css";
 import Row from "./Row/Row";
 import { useState } from "react";
 
-const Table = ({ listProducts }) => {
+const Table = ({
+  listProducts,
+  setOpenModal,
+  setChildren,
+  calculateDiscount,
+}) => {
   const [list, setList] = useState(listProducts);
 
   if (list !== listProducts) {
@@ -24,7 +29,14 @@ const Table = ({ listProducts }) => {
         </thead>
         <tbody>
           {list.map((product, index) => (
-            <Row key={product._id} product={product} index={index} />
+            <Row
+              key={product._id}
+              product={product}
+              index={index}
+              setOpenModal={setOpenModal}
+              setChildren={setChildren}
+              calculateDiscount={calculateDiscount}
+            />
           ))}
         </tbody>
       </table>

@@ -5,12 +5,18 @@ import { useForm } from "react-hook-form";
 import Joi from "joi";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { MdDelete, MdDone, MdSave } from "react-icons/md";
-import { BiLoaderAlt, BiError } from "react-icons/bi";
+import { BiLoaderAlt, BiError, BiPlusCircle, BiPlus } from "react-icons/bi";
 import { deleteProduct, editProduct } from "../../../../Redux/products/thunks";
 import { useDispatch } from "react-redux";
+import ModalProduct from "../../ModalProduct/ModalProduct";
 
-const Row = ({ product, index }) => {
-  console.log(product);
+const Row = ({
+  product,
+  index,
+  setOpenModal,
+  setChildren,
+  calculateDiscount,
+}) => {
   const dispatch = useDispatch();
 
   const productSchema = Joi.object({
@@ -96,7 +102,6 @@ const Row = ({ product, index }) => {
     data.hasDiscount = hasDiscount;
     try {
       dispatch(editProduct(data, product._id)).then((response) => {
-        console.log(response);
         if (!response.error) {
           setIcon(2);
           setTimeout(() => {
@@ -114,19 +119,24 @@ const Row = ({ product, index }) => {
   };
 
   const onDelete = () => {
-    setDeleteIcon(1);
-    try {
-      dispatch(deleteProduct(product._id)).then((response) => {
-        if (!response.error) {
-          setDeleteIcon(2);
-        } else {
-          alert(`Ocurrio un error "${response.message}"`);
-          setDeleteIcon(1);
-        }
-      });
-    } catch (error) {
-      console.log(error);
+    const confirmed = window.confirm(
+      `¿Estás seguro de que deseas eliminar ${product.name}?`
+    );
+    if (confirmed) {
       setDeleteIcon(1);
+      try {
+        dispatch(deleteProduct(product._id)).then((response) => {
+          if (!response.error) {
+            setDeleteIcon(2);
+          } else {
+            alert(`Ocurrió un error "${response.message}"`);
+            setDeleteIcon(1);
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        setDeleteIcon(1);
+      }
     }
   };
 
@@ -143,8 +153,23 @@ const Row = ({ product, index }) => {
       title={
         !product.isActive
           ? "Producto inactivo"
-          : product.hasStar && "Producto destacado"
+          : product.hasStar
+          ? "Producto destacado"
+          : ""
       }
+      // onClick={() => {
+      //   setOpenModal(true);
+      //   setChildren(
+      //     <ModalProduct
+      //       productData={product}
+      //       calculateDiscount={calculateDiscount}
+      //       // setProductId={setProductId}
+      //       // setDiscountState={setDiscountState}
+      //       // setDeactivationState={setDeactivationState}
+      //       // setDeleteState={setDeleteState}
+      //     />
+      //   );
+      // }}
     >
       <td style={{ position: "relative" }}>
         <span
@@ -156,7 +181,7 @@ const Row = ({ product, index }) => {
           <button
             type="submit"
             onClick={onDelete}
-            className={styles.tableButton}
+            className={`${styles.tableButton} ${styles.tableButtonDelete}`}
           >
             {deleteIcon === 0 ? (
               <MdDelete title="Borrar producto" />
@@ -190,10 +215,12 @@ const Row = ({ product, index }) => {
           error={errors.discountPercentage?.message}
           table={true}
           title={
-            product.hasDiscount &&
-            `Precio final con descuento: ${Math.round(
-              product.price - (product.discountPercentage / 100) * product.price
-            )}`
+            product.hasDiscount
+              ? `Precio final con descuento: ${Math.round(
+                  product.price -
+                    (product.discountPercentage / 100) * product.price
+                )}`
+              : ""
           }
         />
       </td>
@@ -216,23 +243,47 @@ const Row = ({ product, index }) => {
         />
       </td>
       <td>
-        <button
-          type="submit"
-          onClick={handleSubmit(onEdit)}
-          className={styles.tableButton}
+        <span
+          style={{
+            display: "flex",
+          }}
         >
-          {icon === 0 ? (
-            <div>
+          <button
+            onClick={() => {
+              setOpenModal(true);
+              setChildren(
+                <ModalProduct
+                  productData={product}
+                  calculateDiscount={calculateDiscount}
+                  modalTable={true}
+                  // setProductId={setProductId}
+                  // setDiscountState={setDiscountState}
+                  // setDeactivationState={setDeactivationState}
+                  // setDeleteState={setDeleteState}
+                />
+              );
+            }}
+            className={styles.tableButton}
+            style={{ marginRight: "5px" }}
+          >
+            <BiPlus title="Ver mas detalles" />
+          </button>
+          <button
+            type="submit"
+            onClick={handleSubmit(onEdit)}
+            className={styles.tableButton}
+          >
+            {icon === 0 ? (
               <MdSave title="Guardar cambios" />
-            </div>
-          ) : icon === 1 ? (
-            <BiLoaderAlt className={styles.loader} title="Cargando..." />
-          ) : icon === 2 ? (
-            <MdDone title="Cambios guardados" />
-          ) : (
-            <BiError title="Ocurrio un error, si persiste, recarga la pagina o deslogueate y volve a loguearte" />
-          )}
-        </button>
+            ) : icon === 1 ? (
+              <BiLoaderAlt className={styles.loader} title="Cargando..." />
+            ) : icon === 2 ? (
+              <MdDone title="Cambios guardados" />
+            ) : (
+              <BiError title="Ocurrio un error, si persiste, recarga la pagina o deslogueate y volve a loguearte" />
+            )}
+          </button>
+        </span>
       </td>
     </tr>
   );

@@ -58,8 +58,7 @@
 }
 
 .img,
-.noImg,
-.imgModal {
+.noImg {
   width: 100%;
   min-width: 120px;
   max-width: 300px;
@@ -71,12 +70,6 @@
 
 .noImg {
   object-fit: cover;
-}
-
-.imgModal {
-  object-fit: contain;
-  max-height: 250px;
-  margin-top: 40px;
 }
 
 .inactiveProduct {
