@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import Joi from "joi";
 import { joiResolver } from "@hookform/resolvers/joi";
 import { MdDelete, MdDone, MdSave } from "react-icons/md";
-import { BiLoaderAlt, BiError, BiPlusCircle, BiPlus } from "react-icons/bi";
+import { BiLoaderAlt, BiError, BiPlus } from "react-icons/bi";
 import { deleteProduct, editProduct } from "../../../../Redux/products/thunks";
 import { useDispatch } from "react-redux";
 import ModalProduct from "../../ModalProduct/ModalProduct";
@@ -13,7 +13,9 @@ import ModalProduct from "../../ModalProduct/ModalProduct";
 const Row = ({
   product,
   index,
+  openModal,
   setOpenModal,
+  children,
   setChildren,
   calculateDiscount,
 }) => {
@@ -140,6 +142,10 @@ const Row = ({
     }
   };
 
+  if (!openModal) {
+    setChildren("");
+  }
+
   return (
     <tr
       key={index}
@@ -170,6 +176,8 @@ const Row = ({
       //     />
       //   );
       // }}
+
+      if
     >
       <td style={{ position: "relative" }}>
         <span

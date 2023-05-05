@@ -369,7 +369,9 @@ const Home = () => {
           {tableView ? (
             <Table
               listProducts={listProducts}
+              openModal={openModal}
               setOpenModal={setOpenModal}
+              children={children}
               setChildren={setChildren}
               calculateDiscount={calculateDiscount}
             />

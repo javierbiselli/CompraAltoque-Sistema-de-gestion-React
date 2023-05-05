@@ -4,7 +4,9 @@ import { useState } from "react";
 
 const Table = ({
   listProducts,
+  openModal,
   setOpenModal,
+  children,
   setChildren,
   calculateDiscount,
 }) => {
@@ -33,7 +35,9 @@ const Table = ({
               key={product._id}
               product={product}
               index={index}
+              openModal={openModal}
               setOpenModal={setOpenModal}
+              children={children}
               setChildren={setChildren}
               calculateDiscount={calculateDiscount}
             />
