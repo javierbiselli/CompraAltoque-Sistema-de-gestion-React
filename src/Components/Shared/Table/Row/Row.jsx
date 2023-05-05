@@ -163,21 +163,6 @@ const Row = ({
           ? "Producto destacado"
           : ""
       }
-      // onClick={() => {
-      //   setOpenModal(true);
-      //   setChildren(
-      //     <ModalProduct
-      //       productData={product}
-      //       calculateDiscount={calculateDiscount}
-      //       // setProductId={setProductId}
-      //       // setDiscountState={setDiscountState}
-      //       // setDeactivationState={setDeactivationState}
-      //       // setDeleteState={setDeleteState}
-      //     />
-      //   );
-      // }}
-
-      if
     >
       <td style={{ position: "relative" }}>
         <span
