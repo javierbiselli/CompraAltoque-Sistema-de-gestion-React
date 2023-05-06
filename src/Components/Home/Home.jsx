@@ -243,8 +243,7 @@ const Home = () => {
       let match = 0;
       searchWords.forEach((word) => {
         if (
-          product.keywords.join(" ").match(word) &&
-          product.isActive === true
+          product.keywords.join(" ").match(word)
         ) {
           match += 1;
         }
