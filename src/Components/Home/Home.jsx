@@ -265,6 +265,7 @@ const Home = () => {
         (response) => {
           if (!response.error) {
             setOpenModal(false);
+            setTableView(false);
             alert("Productos editados");
             dispatch(getProducts());
           } else {
